@@ -1,3 +1,4 @@
+import './App.scss';
 import React from "reactn";
 import { setGlobal } from 'reactn';
 import Home from "./pages/Home";

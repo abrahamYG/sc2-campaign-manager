@@ -3,6 +3,7 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: "./renderer.js",
+  target: "electron-renderer",
   mode: "development",
   module: {
     rules: [
@@ -10,7 +11,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
-        options: { presets: ["@babel/env"] }
+        //options: { presets: ["@babel/env"] }
       },
       {
         test: /\.css$/,

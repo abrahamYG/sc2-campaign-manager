@@ -1,0 +1,241 @@
+{
+	"definitions": {},
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$id": "http://example.com/root.json",
+	"type": "object",
+	"title": "The Root Schema",
+	"required": [
+		"id",
+		"name",
+		"shortName",
+		"installed",
+		"summmary",
+		"thumbnail",
+		"description",
+		"maps1",
+		"author",
+		"lastUpdated",
+		"screenshots",
+		"patchNotes",
+		"maps"
+	],
+	"properties": {
+		"id": {
+			"$id": "#/properties/id",
+			"type": "string",
+			"title": "Campaign ID",
+			"default": "",
+			"examples": [
+				"ad"
+			],
+			"pattern": "^(.*)$"
+		},
+		"name": {
+			"$id": "#/properties/name",
+			"type": "string",
+			"title": "Campaign Name",
+			"default": "",
+			"examples": [
+				"New Lifestyle Redesign"
+			],
+			"pattern": "^(.*)$"
+		},
+		"shortName": {
+			"$id": "#/properties/shortName",
+			"type": "string",
+			"title": "Campaign's Short Name",
+			"default": "",
+			"examples": [
+				"New Lifestyle Redesign"
+			],
+			"pattern": "^(.*)$"
+		},
+		"installed": {
+			"$id": "#/properties/installed",
+			"type": "boolean",
+			"title": "Is Installed?",
+			"default": false,
+			"examples": [
+				false
+			]
+		},
+		"summmary": {
+			"$id": "#/properties/summmary",
+			"type": "string",
+			"title": "Summary",
+			"default": "",
+			"examples": [
+				"A seminal story about Harman Lifestyle Audio."
+			],
+			"pattern": "^(.*)$"
+		},
+		"thumbnail": {
+			"$id": "#/properties/thumbnail",
+			"type": "string",
+			"title": "Thumbnail",
+			"default": "",
+			"examples": [
+				"https://media.forgecdn.net/avatars/thumbnails/83/616/62/62/636189625320433882.jpeg"
+			],
+			"pattern": "^(.*)$"
+		},
+		"description": {
+			"$id": "#/properties/description",
+			"type": "string",
+			"title": "Description",
+			"default": "",
+			"examples": [
+				"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+			],
+			"pattern": "^(.*)$"
+		},
+		"maps1": {
+			"$id": "#/properties/maps1",
+			"type": "integer",
+			"title": "The Maps1 Schema",
+			"default": 0,
+			"examples": [
+				14
+			]
+		},
+		"author": {
+			"$id": "#/properties/author",
+			"type": "string",
+			"title": "Author",
+			"default": "",
+			"examples": [
+				"TeamVMWare"
+			],
+			"pattern": "^(.*)$"
+		},
+		"lastUpdated": {
+			"$id": "#/properties/lastUpdated",
+			"type": "string",
+			"title": "Last Updated",
+			"default": "",
+			"examples": [
+				"3:56pm, April 3, 2012"
+			],
+			"pattern": "^(.*)$"
+		},
+		"screenshots": {
+			"$id": "#/properties/screenshots",
+			"type": "array",
+			"title": "Screenshots",
+			"items": {
+				"$id": "#/properties/screenshots/items",
+				"type": "object",
+				"title": "Screenshot",
+				"required": [
+					"src"
+				],
+				"properties": {
+					"src": {
+						"$id": "#/properties/screenshots/items/properties/src",
+						"type": "string",
+						"title": "Src",
+						"default": "",
+						"examples": [
+							"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"
+						],
+						"pattern": "^(.*)$"
+					}
+				}
+			}
+		},
+		"patchNotes": {
+			"$id": "#/properties/patchNotes",
+			"type": "array",
+			"title": "Patch Notes",
+			"items": {
+				"$id": "#/properties/patchNotes/items",
+				"type": "object",
+				"title": "Patch Note",
+				"required": [
+					"version",
+					"date",
+					"notes"
+				],
+				"properties": {
+					"version": {
+						"$id": "#/properties/patchNotes/items/properties/version",
+						"type": "string",
+						"title": "Version",
+						"default": "",
+						"examples": [
+							"v1.00"
+						],
+						"pattern": "^(.*)$"
+					},
+					"date": {
+						"$id": "#/properties/patchNotes/items/properties/date",
+						"type": "string",
+						"title": "Date",
+						"default": "",
+						"examples": [
+							"3:56pm, April 3, 2012"
+						],
+						"pattern": "^(.*)$"
+					},
+					"notes": {
+						"$id": "#/properties/patchNotes/items/properties/notes",
+						"type": "string",
+						"title": "Notes",
+						"default": "",
+						"examples": [
+							"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+						],
+						"pattern": "^(.*)$"
+					}
+				}
+			}
+		},
+		"maps": {
+			"$id": "#/properties/maps",
+			"type": "array",
+			"title": "Maps",
+			"items": {
+				"$id": "#/properties/maps/items",
+				"type": "object",
+				"title": "Map",
+				"required": [
+					"name",
+					"description",
+					"file"
+				],
+				"properties": {
+					"name": {
+						"$id": "#/properties/maps/items/properties/name",
+						"type": "string",
+						"title": "Name",
+						"default": "",
+						"examples": [
+							"Launcher"
+						],
+						"pattern": "^(.*)$"
+					},
+					"description": {
+						"$id": "#/properties/maps/items/properties/description",
+						"type": "string",
+						"title": "Description",
+						"default": "",
+						"examples": [
+							"Launcher for the campaign"
+						],
+						"pattern": "^(.*)$"
+					},
+					"file": {
+						"$id": "#/properties/maps/items/properties/file",
+						"type": "string",
+						"title": "File",
+						"default": "",
+						"examples": [
+							"maps/MyCampaign/Launcher.sc2map"
+						],
+						"pattern": "^(.*)$"
+					}
+				}
+			}
+		}
+	}
+}

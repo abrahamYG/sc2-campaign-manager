@@ -1,0 +1,186 @@
+[
+	{
+		"id": "ad",
+		"name": "New Lifestyle Redesign",
+		"shortName": "New Lifestyle Redesign",
+		"installed":false,
+		"summmary": "A seminal story about Harman Lifestyle Audio.",
+		"thumbnail": "https://media.forgecdn.net/avatars/thumbnails/83/616/62/62/636189625320433882.jpeg",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		"maps1": 14,
+		"author": "TeamVMWare",
+		"lastUpdated": "2012-04-03",
+		"screenshots": [
+			{
+				"src":"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"
+			},
+			{
+				"src":"https://media.forgecdn.net/attachments/160/18/comparison1-4_1_.png"
+			}
+		],
+		"patchNotes":[
+			{
+				"version":"v1.00",
+				"date":"2012-04-03",
+				"notes":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+			}
+		],
+		"maps": [
+			{
+				"name":"Launcher",
+				"description":"Launcher for the campaign",
+				"file": "maps/MyCampaign/Launcher.sc2map"
+			},
+			{
+				"name":"Prologue",
+				"description":"Prologue map",
+				"file": "maps/MyCampaign/00.sc2map"
+			}
+		]
+		
+	},
+	{
+		"id": "tacrem",
+		"name": "The Antioch Chronicles Remastered",
+		"shortName": "The Antioch Chronicles Remastered",
+		"installed":true,
+		"summmary": "A StarCraft 2 remake of the seminal StarCraft custom campaign known as the Antioch Chronicles.",
+		"thumbnail": "https://media.forgecdn.net/avatars/thumbnails/83/616/62/62/636189625320433882.jpeg",
+		"description": "# What is this?\n\nThis is the first release of a StarCraft 2 remake of the seminal StarCraft custom campaign known as the Antioch Chronicles. This project is a high-fidelity reproduction of the original campaign with few enhancements taking advantage of the StarCraft 2 editor.\n\nThis version contains both episode 1 and 2 of the campaign. It uses the StarCraft: Mass Recall mod, which the creators were generous enough to allow us to use.\n\nWant to chat about the Antioch Chronicles? Join us on Discord!",
+		"maps1": 14,
+		"author": "TeamAntioch",
+		"lastUpdated": "2012-04-03",
+		"screenshots": [
+			{"src":"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"},
+			{"src":"https://media.forgecdn.net/attachments/160/18/comparison1-4_1_.png"}
+		],
+		"patchNotes":[
+			{
+				"version":"v1.00",
+				"date":"2012-04-03",
+				"notes":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+			}
+		],
+		"maps": [
+			{
+				"name":"Launcher",
+				"description":"Launcher for the campaign",
+				"file": "maps/MyCampaign/Launcher.sc2map"
+			},
+			{
+				"name":"Prologue",
+				"description":"Prologue map",
+				"file": "maps/MyCampaign/00.sc2map"
+			}
+		]
+		
+	},
+	{
+		
+		"id": "tactic",
+		"name": "The Antioch Chronicles: Thoughts in Chaos",
+		"shortName": "The Antioch Chronicles Ep. 3: Thoughts in Chaos",
+		"installed":false,
+		"summmary": "The long-awaited third episode of the Antioch Chronicles.",
+		"thumbnail": "https://media.forgecdn.net/avatars/thumbnails/81/803/62/62/636178335194396386.png",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		"maps1": 10,
+		"author": "TeamAntioch",
+		"lastUpdated": "3:56pm, April 3, 2017",
+		"screenshots": [
+			{"src":"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"},
+			{"src":"https://media.forgecdn.net/attachments/160/18/comparison1-4_1_.png"}
+		],
+		"patchNotes":[
+			{
+				"version":"v1.00",
+				"date":"2012-04-03",
+				"notes":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+			}
+		],
+		"maps": [
+			{
+				"name":"Launcher",
+				"description":"Launcher for the campaign",
+				"file": "maps/MyCampaign/Launcher.sc2map"
+			},
+			{
+				"name":"Prologue",
+				"description":"Prologue map",
+				"file": "maps/MyCampaign/00.sc2map"
+			}
+		]
+	},
+	{
+		
+		"id": "tactic2",
+		"name": "The Antioch Chronicles: Thoughts in Chaos",
+		"shortName": "The Antioch Chronicles Ep. 3: Thoughts in Chaos",
+		"installed":false,
+		"summmary": "The long-awaited third episode of the Antioch Chronicles.",
+		"thumbnail": "https://media.forgecdn.net/avatars/thumbnails/81/803/62/62/636178335194396386.png",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		"maps": 10,
+		"author": "TeamAntioch",
+		"lastUpdated": "3:56pm, April 3, 2017",
+		"screenshots": [
+			{"src":"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"},
+			{"src":"https://media.forgecdn.net/attachments/160/18/comparison1-4_1_.png"}
+		],
+		"patchNotes":[
+			{
+				"version":"v1.00",
+				"date":"2012-04-03",
+				"notes":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+			}
+		]
+	},
+	{
+		
+		"id": "tactic3",
+		"name": "The Antioch Chronicles: Thoughts in Chaos",
+		"shortName": "The Antioch Chronicles Ep. 3: Thoughts in Chaos",
+		"installed":false,
+		"summmary": "The long-awaited third episode of the Antioch Chronicles.",
+		"thumbnail": "https://media.forgecdn.net/avatars/thumbnails/81/803/62/62/636178335194396386.png",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		"maps": 10,
+		"author": "TeamAntioch",
+		"lastUpdated": "3:56pm, April 3, 2017",
+		"screenshots": [
+			{"src":"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"},
+			{"src":"https://media.forgecdn.net/attachments/160/18/comparison1-4_1_.png"}
+		],
+		"patchNotes":[
+			{
+				"version":"v1.00",
+				"date":"2012-04-03",
+				"notes":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+			}
+		]
+	},
+	{
+		
+		"id": "tactic4",
+		"name": "The Antioch Chronicles: Thoughts in Chaos",
+		"shortName": "The Antioch Chronicles Ep. 3: Thoughts in Chaos",
+		"installed":false,
+		"summmary": "The long-awaited third episode of the Antioch Chronicles.",
+		"thumbnail": "https://media.forgecdn.net/avatars/thumbnails/81/803/62/62/636178335194396386.png",
+		"description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\nDuis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		"maps": 10,
+		"author": "TeamAntioch",
+		"lastUpdated": "3:56pm, April 3, 2017",
+		"screenshots": [
+			{"src":"https://media.forgecdn.net/attachments/160/22/kelmorianspecimens.jpg"},
+			{"src":"https://media.forgecdn.net/attachments/160/18/comparison1-4_1_.png"}
+		],
+		"patchNotes":[
+			{
+				"version":"v1.00",
+				"date":"2012-04-03",
+				"notes":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+			}
+		]
+	}
+]

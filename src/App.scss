@@ -1,5 +1,45 @@
 @import '~bootstrap/scss/bootstrap.scss';
 
+*::-webkit-scrollbar {
+    width: 6px !important;
+    height: 6px !important;
+}
+*::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+*::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.top-bar{
+	background: rgb(37, 42, 58);
+	-webkit-app-region: drag;
+	-webkit-user-select: none;
+  	-webkit-app-region: drag;
+	button, a {
+		-webkit-app-region: no-drag;
+	  }
+}
+.sidebar, .campaign-details-pane,.manifest-editor-pane{
+	height: calc(100vh - 56px);
+	overflow-y: scroll;
+}
+
+.campaign-details-pane,.manifest-editor-pane {
+	min-width: 400px;
+}
+
+.sidebar {
+	min-width: 400px;
+}
+
+.campaign-item-shortname{
+	font-size: 16px;
+}
+
+.campaign-item-summary{
+	font-size: 14px;
+}
 body{
 	overflow: hidden;
 }

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 
+import DownloadBar from '../components/DownloadBar'
+
 function CampaignListItem(props) {
-	const {campaign, selectedId} = props;
+	const {campaign, selectedId, downloadProgress} = props;
 	//const selectedId = (selectedCampaign)?selectedCampaign.id:""
 	const {id, thumbnail, author, shortName, summmary} = campaign;
 	return (
@@ -28,7 +30,7 @@ function CampaignListItem(props) {
 				<small>By {author}</small>
 				<p className="campaign-item-summary mb-1 ml-5">{summmary}</p>
 			</div>
-			
+			<DownloadBar progress={downloadProgress} />
 		</button>
 	);
 }
@@ -36,9 +38,15 @@ function CampaignListItem(props) {
 
 class CampaignList extends Component {
 	render() {
-		const {campaigns, selectedId, onClick} = this.props;
+		const {campaigns, selectedId, onClick,downloadProgress} = this.props;
 		const listItems = campaigns.map((campaign) =>
-			<CampaignListItem key={campaign.id} campaign={campaign} onClick={onClick} selectedId={selectedId} />
+			<CampaignListItem 
+				key={campaign.id} 
+				campaign={campaign} 
+				onClick={onClick} 
+				selectedId={selectedId} 
+				downloadProgress={downloadProgress}
+			/>
 		);
 		return (
 			<nav className="campaign-list-pane list-group list-group-flush">

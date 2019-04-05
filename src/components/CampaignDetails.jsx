@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Lightbox from 'react-lightbox-component';
+import { HashRouter as Router, Route, NavLink } from "react-router-dom";
+//import Lightbox from 'react-lightbox-component';
 
 import  ReactMarkdown from 'react-markdown'
+import Redirect from 'react-router-dom/Redirect';
 
 import authorStore from '../api/authorStore'
+import campaignStore from '../api/campaignStore'
+import Campaign from '../classes/Campaign'
+
+
+import DownloadBar from '../components/DownloadBar'
+
+
+
 
 const emptyCampaign = {
 	name:"",
 	"author":"",
 	"description":"",
 	"maps":[],
+	"mods":[],
 	"lastUpdated":"",
 	"patchNotes":"",
 	"screenshots":[],
@@ -25,8 +36,8 @@ const emptyAuthor = {
 };
 
 function PatchNotes(props){
-	return props.patchNotes.map((patchNote) =>
-	<section>
+	return props.patchNotes.map((patchNote,i) =>
+	<section key={i}>
 		<h2>{patchNote.version} (<time>{(new Date(patchNote.date)).toDateString()}</time>)</h2>
 		<ReactMarkdown source={patchNote.notes} />
 	</section>
@@ -36,37 +47,50 @@ function PatchNotes(props){
 class CampaignDetails extends Component {
 	constructor(props) {
 		super(props);
-		const selectedPane = (localStorage.getItem('selectedDetailsPane')!==null)?localStorage.getItem('selectedDetailsPane'):"description";
-		this.state = {
-			selectedPane: selectedPane
-		};
 	}
 
-	handleSelectedPaneClick = (item) => {
-		localStorage.setItem('selectedDetailsPane',item)
-		this.setState({
-			selectedPane:item
-		});
-	};
+	handleDownloadClick = () => {
+		const {selectedCampaign} = this.props;
+		console.group("handleDownloadClick")
+		console.log(selectedCampaign)
+		const {id} = selectedCampaign;
+		console.log(`isCampaignInstalled ${id}`,Campaign.isCampaignInstalled(selectedCampaign));
+		Campaign.downloadCampaign(selectedCampaign);
+		console.groupEnd();
+	}
 
 	render() {
-		const {selectedCampaign, selectedCampaignAuthor, onPlayCampaignClick, onUpdateCampaignClick, onDownloadCampaignClick } = this.props
-		const {name, description, maps, lastUpdated, patchNotes, screenshots, installed} = (selectedCampaign)?selectedCampaign:emptyCampaign;
+		const {
+			downloadProgress, 
+			selectedCampaign, 
+			selectedCampaignAuthor, 
+			onPlayCampaignClick, 
+			onUpdateCampaignClick, 
+			onDownloadCampaignClick,
+		} = this.props
+		const campaign = (selectedCampaign)?selectedCampaign:emptyCampaign
+		const {id, name, description, maps, lastUpdated, patchNotes, screenshots, installed} = campaign;
 		const author = (selectedCampaignAuthor)?selectedCampaignAuthor:emptyAuthor;
-		const {selectedPane} = this.state;
-		console.log("selectedCampaign",selectedCampaign)
+		const isCampaignInstalled = !Campaign.isCampaignInstalled(campaign);
+
+		const onDownloadClick = this.handleDownloadClick;
+
+		
+
+		console.log("campaign",campaign)
 		return (
+			<Router>
         	<section className="campaign-content">
-				<header className="campaign-content-header">
+				<header className="campaign-content-header mb-2">
 					<div className="campaign-content-controls btn-group float-right" role="group">
-						{(!installed) &&
-							<>
-							<button onClick={onPlayCampaignClick} className="btn btn-primary">Play</button>
-							<button onClick={onUpdateCampaignClick} className="btn btn-outline-primary">Update</button>
-							</>
+						{(isCampaignInstalled) &&
+							<React.Fragment>
+								<button onClick={onPlayCampaignClick} className="btn btn-primary">Play</button>
+								<button onClick={onUpdateCampaignClick} className="btn btn-outline-primary">Update</button>
+							</React.Fragment>
 						}
-						{(installed) &&
-							<button onClick={onDownloadCampaignClick} className="btn btn-primary">Download</button>	
+						{(!isCampaignInstalled) &&
+							<button onClick={onDownloadClick} className="btn btn-primary">Download</button>	
 						}
 						
 					</div>
@@ -83,61 +107,66 @@ class CampaignDetails extends Component {
 							<span> <i className="campaign-filter-updated"></i>Updated</span>
 						}
 					</p>
-				
+					{(!isCampaignInstalled) &&
+						<DownloadBar progress={downloadProgress} />
+					}
 	
 					
 				</header>
 	
 				<div className="campaign-content-body">
 					<div className="btn-group" role="group" aria-label="...">
-						<button 
-							onClick={()=>this.handleSelectedPaneClick("description")}
-							className={"btn"+((selectedPane === "description")?" btn-primary active":" btn-outline-primary")}>
+						<NavLink to="/campaign/description" className="btn btn-outline-primary" activeClassName="btn-primary active">
 							Description
-						</button>
-						<button 
-							onClick={()=>this.handleSelectedPaneClick("screenshots")}
-							className={"btn"+((selectedPane === "screenshots")?" btn-primary active":" btn-outline-primary")}>
+						</NavLink>
+						<NavLink to="/campaign/screenshots" className="btn btn-outline-primary" activeClassName="btn-primary active">
 							Screenshots
-						</button>
-						<button 
-							onClick={()=>this.handleSelectedPaneClick("patchNotes")}
-							className={"btn"+((selectedPane === "patchNotes")?" btn-primary active":" btn-outline-primary")}>
-							Patch Notes
-						</button>
-						<button 
-							onClick={()=>this.handleSelectedPaneClick("maps")}
-							className={"btn"+((selectedPane === "maps")?" btn-primary active":" btn-outline-primary")}>
-							Maps
-						</button>
+						</NavLink>
+						<NavLink to="/campaign/patchNotes" className="btn btn-outline-primary" activeClassName="btn-primary active">
+						Patch Notes
+						</NavLink>
+						<NavLink to="/campaign/maps" className="btn btn-outline-primary" activeClassName="btn-primary active">
+						Maps
+						</NavLink>
 					</div>
 					<ul>
 						<li>Maps: {maps.length}</li>
 					</ul>
 					
 					<article>
-					{(selectedPane === "description") &&
+					<Route path="/campaign" exact render={()=>
+						<Redirect to="/campaign/description" />
+					} />
+					<Route path="/campaign/description" render={()=>
 						<ReactMarkdown source={description} />
-					}
-					{(selectedPane === "screenshots") &&
-						<Lightbox images={screenshots} />
-					}
-					{(selectedPane === "patchNotes") &&
+					} />
+					<Route path="/campaign/screenshots" render={()=>
+						<ul>
+						{screenshots.map((screenshot) =>
+							<React.Fragment key={screenshot.src}>
+							<li>{screenshot.src}</li>	
+							</React.Fragment>
+						)}
+						</ul>
+					} />
+					
+					<Route path="/campaign/patchNotes" render={()=>
 						<PatchNotes patchNotes={patchNotes}/>
-					}
-					{(selectedPane === "maps") &&
+					} />
+					<Route path="/campaign/maps" render={()=>
 						<dl>
 						{maps.map((map) =>
 							<React.Fragment key={map.file}>
-								<dt>{map.name} <button className="btn">Launch</button></dt>
+								<dt>{map.name} <button className="btn btn-secondary">Launch</button></dt>
 								<dd>{map.description}</dd>
 							</React.Fragment>
 						)}
 						</dl>
-					}
+					} />
 					</article>
 				</div>
 			</section>
+			</Router>
 			
 		);
 	}

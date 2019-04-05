@@ -1,0 +1,17 @@
+[
+	{
+		"id":"TeamAntioch",
+		"name":"Team Antioch",
+		"email":"TeamAntioch@gmail.com",
+		"campaigns":[
+			"tacrem","tactic"
+		]
+	},
+	{
+		"id":"Alevice",
+		"email":"dudkisc2@gmail.com",
+		"campaigns":[
+			"annihilation"
+		]
+	}
+]

@@ -1,10 +1,9 @@
-# electron-react-boilerplate-minimal
+# sc2-campaign-manager
 
-An Electron, React (16.8) boilerplate for minimalists. Comes with Webpack, Babel, Electron, reactn and an example app using React Hooks.
+A Campaign Manager for StarCraft II. Since the game doesnt natively support custom campaigns, and a regular user has to go through hoops to get one running, this tool aims to simplify that process, providing a simple "marketplace" where to download and run custom campaigns.
 
-Uses [electron-quick-start](https://github.com/electron/electron-quick-start) for Electron base. 
+Uses [electron-react-boilerplate-minimal](https://github.com/f-prime/electron-react-boilerplate-minimal) as a boilerplate.
 
-Comes with a basic counting app
 
 ![](image.png)
 
@@ -14,9 +13,9 @@ Comes with a basic counting app
 
 `npm install`
 
-`yarn dev`
+* `yarn dev`: Creates the Renderer
 
-`yarn start`
+* `yarn start`: Creates the Electron Instance
 
 # Building for Production
 

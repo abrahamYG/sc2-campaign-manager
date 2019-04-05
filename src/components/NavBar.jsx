@@ -1,27 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import { HashRouter as Router, Route, NavLink } from "react-router-dom";
+import { useGlobal } from 'reactn';
+import { use } from 'builder-util';
 
 function NavBar(props) {
 	const {selectedPane} = props;
+	const [campaignCount,setCampaignCount] = useGlobal("campaignCount");
 	const filterActive = "installed"
-	const campaignPaneActive = ((selectedPane === "campaigns")?" active":"");
-	const settingsPaneActive = ((selectedPane === "settings")?" active":" ");
-	const mapmakersPaneActive = ((selectedPane === "mapmakers")?" active":" ");
 	const filterInstalledActive = ((filterActive === "installed")?" active":" ");
 	const filterUpdatedActive = ((filterActive === "updated")?" active":" ");
 	return (
 		<nav className="top-bar navbar navbar-expand-sm navbar-dark">
-			<NavLink to="/" className="navbar-brand">
-				Campaign Browser
-			</NavLink>
-			<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-				<span className="navbar-toggler-icon"></span>
-			</button>
-			<div className="collapse navbar-collapse" id="collapsibleNavbar">
-				<ul className="navbar-nav">
+			<div className="collapse navbar-collapse">
+				<ul className="nav nav-pills">
 				<li className="nav-item">
-					<NavLink to="/campaigns" className="nav-link" activeClassName="active">
-						Campaigns <span class="campaign-count badge badge-dark">2</span>
+					<NavLink to="/campaign" className="nav-link" activeClassName="active">
+						Campaigns <span className="campaign-count badge badge-dark">{campaignCount}</span>
 					</NavLink>
 				</li>
 				<li className="nav-item">
@@ -38,12 +32,12 @@ function NavBar(props) {
 				<ul className="navbar-nav">
 				<li className="nav-item">
 					<a className={"nav-link"+filterInstalledActive} href="#">
-						<span class="badge badge-warning">&nbsp;&nbsp;</span> Installed
+						<span className="badge badge-warning">&nbsp;&nbsp;</span> Installed
 					</a>
 				</li>
 				<li className="nav-item">
 					<a className={"nav-link"+filterUpdatedActive} href="#">
-					<span class="badge badge-info">&nbsp;&nbsp;</span> Updated
+					<span className="badge badge-info">&nbsp;&nbsp;</span> Updated
 					</a>
 				</li>
 				</ul>
@@ -52,5 +46,4 @@ function NavBar(props) {
 	);
 }
 
-	
-	export default NavBar;
+export default NavBar;

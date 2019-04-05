@@ -1,3 +1,18 @@
 {
-    presets:["@babel/env", "@babel/preset-react"]
+	"plugins": ["react-hot-loader/babel","@babel/plugin-proposal-class-properties","@babel/plugin-transform-react-jsx"],
+	/* 
+	"presets":[
+		[
+			"@babel/env", 
+			{
+				"targets": {
+					"browsers": ["last 2 Chrome versions"]
+				}
+			}
+		], 
+		"@babel/preset-react",
+		//"flow"
+	], 
+	*/
+	
 }

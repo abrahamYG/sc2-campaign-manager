@@ -11,7 +11,7 @@ Uses [electron-react-boilerplate-minimal](https://github.com/f-prime/electron-re
 
 3 simple commands.
 
-`npm install`
+* `npm install`: Install all required dependencies
 
 * `yarn dev`: Creates the Renderer
 

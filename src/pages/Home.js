@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from 'reactn';
 import { HashRouter as Router, Route, Link } from "react-router-dom";
 
 import campaignStore from '../api/campaignStore'
 import authorStore from '../api/authorStore'
+
+
+
+import Campaign from '../classes/Campaign'
 
 import { setGlobal } from 'reactn';
 import Counter from "../components/Counter.js";
@@ -22,35 +26,8 @@ class Home extends Component {
 			"selectedCampaignAuthor": null,
 			"selectedPane": selectedPaneLocal
 		};
-		campaignStore.getCampaigns((campaigns)=>{
-			console.log("campaignStore.getCampaigns campaigns", campaigns);
-			//let selectedCampaign = null;
-			this.setState({
-				"campaigns":campaigns
-			});
-			campaignStore.getCampaignFromSources().then(remoteCampaigns =>{
-				console.log("campaignStore.getCampaignFromSources campaigns", remoteCampaigns);
-				this.setState({
-					"campaigns":remoteCampaigns
-				});
-				setGlobal({
-					campaignCount:remoteCampaigns.length
-				});
-			});
-		});
-		/* 
-		campaignStore.getCampaign(selectedCampaign,(campaign)=>{
-			console.log("campaignStore.getCampaign campaign",campaign);
-			authorStore.getAuthor(campaign.author,(author)=>{
-				console.log("campaignStore.getCampaign author",author);
-				this.setState({
-					"selectedCampaignAuthor": author,
-				})
-			})
-			this.setState({
-				"selectedCampaign": campaign,
-			})
-		}) */
+		
+		Campaign.getCampaignsRemote().then(campaigns =>this.setState({campaigns}))
 		authorStore.getAuthors((authors)=>{
 			this.setState({
 				"authors":authors

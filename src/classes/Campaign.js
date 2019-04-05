@@ -3,6 +3,8 @@ import { useGlobal } from 'reactn';
 
 
 import _campaignsources from '../api/campaign-sources.json';
+import _campaigns from '../api/campaigns.json'
+
 import Config from './Config';
 import msg from '../constants/ipcmessages';
 
@@ -14,8 +16,8 @@ export default class Campaign {
 		return campaign;
 	}
 	static getCampaignsRemote = async () => {
-		const campaigns = await Promise.all(_campaignsources.map(source => getCampaignRemote(source)));
-		return campaigns;
+		const campaigns = await Promise.all(_campaignsources.map(source => Campaign.getCampaignRemote(source)));
+		return _campaigns;
 	}
 
 	static getCampaignsInstallDir = () => {

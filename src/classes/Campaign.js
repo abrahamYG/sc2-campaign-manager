@@ -17,7 +17,7 @@ export default class Campaign {
 	}
 	static getCampaignsRemote = async () => {
 		const campaigns = await Promise.all(_campaignsources.map(source => Campaign.getCampaignRemote(source)));
-		return _campaigns;
+		return campaigns;
 	}
 
 	static getCampaignsInstallDir = () => {

@@ -3,7 +3,11 @@ import { HashRouter as Router, Route, NavLink } from "react-router-dom";
 import { useGlobal } from 'reactn';
 import { use } from 'builder-util';
 
-function NavBar(props) {
+interface NavBarProps {
+	"selectedPane"?:string
+}
+
+function NavBar(props:NavBarProps) {
 	const {selectedPane} = props;
 	const [campaignCount,setCampaignCount] = useGlobal("campaignCount");
 	const filterActive = "installed"

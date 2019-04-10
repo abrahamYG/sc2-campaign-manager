@@ -1,67 +1,60 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { HashRouter as Router, Route, NavLink } from "react-router-dom";
-//import Lightbox from 'react-lightbox-component';
-
+import { HashRouter as Router, Route, NavLink, Redirect} from "react-router-dom";
 import  ReactMarkdown from 'react-markdown'
-import Redirect from 'react-router-dom/Redirect';
 
-import authorStore from '../api/authorStore'
-import campaignStore from '../api/campaignStore'
-import Campaign from '../classes/Campaign'
-
-
-import DownloadBar from '../components/DownloadBar'
+import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
+import PropTypes  from 'prop-types';
+//import Lightbox from 'react-lightbox-component';
+import DownloadBar from './DownloadBar'
 
 
 
 
-const emptyCampaign = {
-	name:"",
+const emptyCampaign:ICampaign = {
+	"id":"",
+	"name":"",
+	"progress":0,
 	"author":"",
 	"description":"",
 	"maps":[],
 	"mods":[],
 	"lastUpdated":"",
-	"patchNotes":"",
+	"patchNotes":[],
 	"screenshots":[],
 	"installed":false
 };
 
-const emptyAuthor = {
+const emptyAuthor:IAuthor = {
 	"id":"",
 	"name":"",
 	"email":"",
 	"campaigns":[]
 };
 
-function PatchNotes(props){
-	return props.patchNotes.map((patchNote,i) =>
-	<section key={i}>
-		<h2>{patchNote.version} (<time>{(new Date(patchNote.date)).toDateString()}</time>)</h2>
-		<ReactMarkdown source={patchNote.notes} />
-	</section>
-)
+function PatchNotes(props:any){
+	const patchNotes:Array<any> = props.patchNotes;
+	console.log("PatchNotes",patchNotes)
+	return (
+	<React.Fragment>
+	{patchNotes.map((patchNote,i:number) =>
+		<section key={i}>
+			<h3>{patchNote.version} (<time>{(new Date(patchNote.date)).toDateString()}</time>)</h3>
+			<ReactMarkdown source={patchNote.notes} />
+		</section>
+	)}
+	</React.Fragment>
+	);
 }
 
-class CampaignDetails extends Component {
-	constructor(props) {
+class CampaignDetails extends Component<any,any> {
+	constructor(props:any) {
 		super(props);
 	}
 
-	handleDownloadClick = () => {
-		const {selectedCampaign} = this.props;
-		console.group("handleDownloadClick")
-		console.log(selectedCampaign)
-		const {id} = selectedCampaign;
-		console.log(`isCampaignInstalled ${id}`,Campaign.isCampaignInstalled(selectedCampaign));
-		Campaign.downloadCampaign(selectedCampaign);
-		console.groupEnd();
-	}
+	
 
 	render() {
-		const {
-			downloadProgress, 
+		const { 
 			selectedCampaign, 
 			selectedCampaignAuthor, 
 			onPlayCampaignClick, 
@@ -69,12 +62,23 @@ class CampaignDetails extends Component {
 			onDownloadCampaignClick,
 		} = this.props
 		const campaign = (selectedCampaign)?selectedCampaign:emptyCampaign
-		const {id, name, description, maps, lastUpdated, patchNotes, screenshots, installed} = campaign;
-		const author = (selectedCampaignAuthor)?selectedCampaignAuthor:emptyAuthor;
-		const isCampaignInstalled = !Campaign.isCampaignInstalled(campaign);
+		const {
+			id, 
+			name, 
+			description, 
+			maps, 
+			lastUpdated, 
+			patchNotes, 
+			screenshots, 
+			installed, 
+			progress
+		} = campaign;
 
-		const onDownloadClick = this.handleDownloadClick;
+		const author:IAuthor = (selectedCampaignAuthor)?selectedCampaignAuthor:emptyAuthor;
+		const isCampaignInstalled:boolean = installed;//!Campaign.isCampaignInstalled(campaign);
 
+		const onDownloadClick = onDownloadCampaignClick;
+		const downloadProgress:number = (progress)?progress:0;
 		
 
 		console.log("campaign",campaign)
@@ -90,7 +94,7 @@ class CampaignDetails extends Component {
 							</React.Fragment>
 						}
 						{(!isCampaignInstalled) &&
-							<button onClick={onDownloadClick} className="btn btn-primary">Download</button>	
+							<button onClick={(e) => onDownloadClick(campaign)} className="btn btn-primary">Download</button>	
 						}
 						
 					</div>
@@ -142,7 +146,7 @@ class CampaignDetails extends Component {
 					} />
 					<Route path="/campaign/screenshots" render={()=>
 						<ul>
-						{screenshots.map((screenshot) =>
+						{screenshots.map((screenshot:any) =>
 							<React.Fragment key={screenshot.src}>
 							<li>{screenshot.src}</li>	
 							</React.Fragment>
@@ -155,7 +159,7 @@ class CampaignDetails extends Component {
 					} />
 					<Route path="/campaign/maps" render={()=>
 						<dl>
-						{maps.map((map) =>
+						{maps.map((map:any) =>
 							<React.Fragment key={map.file}>
 								<dt>{map.name} <button className="btn btn-secondary">Launch</button></dt>
 								<dd>{map.description}</dd>
@@ -171,12 +175,4 @@ class CampaignDetails extends Component {
 		);
 	}
 }
-	
-CampaignDetails.propTypes = {
-	selectedCampaign: PropTypes.object,
-	onPlayCampaignClick: PropTypes.func,
-	onUpdateCampaignClick: PropTypes.func,
-	onDownloadCampaignClick: PropTypes.func
-};
-
-	export default CampaignDetails;
+export default CampaignDetails;

@@ -2,7 +2,7 @@
 * Mocking client-server processing
 */
 import _campaigns from './campaigns.json'
-import _campaignsources from './campaign-sources.json'
+import _campaignsources from './campaign-sources'
 import _campaignSchema from './campaign-schema.json'
 import {ipcRenderer} from 'electron';
 

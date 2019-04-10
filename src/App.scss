@@ -43,3 +43,11 @@
 body{
 	overflow: hidden;
 }
+.campaign-item {
+	.campaign-thumbnail-container {
+		position:static;
+	}
+	.campaign-item-details {
+		margin-left: 72px;
+	}
+}

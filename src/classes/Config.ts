@@ -1,5 +1,5 @@
 export default {
-	get installDir() {
+	get installDir():string {
 		if (!this._installDir) {
 		  this._installDir = "c:/temp/"
 		}

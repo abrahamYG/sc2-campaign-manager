@@ -2,11 +2,12 @@ const {app, BrowserWindow} = require('electron');
 const { ipcMain } = require('electron');
 const { session } = require('electron');
 const path = require('path');
+const fs = require('fs-extra');
+const download = require('download');
+
 //const download = require('./electron/Download');
 //const {download} = require('electron-dl');
 
-const fs = require('fs');
-const download = require('download');
 
 const msg = require('./src/constants/ipcmessages');
 
@@ -35,7 +36,6 @@ function createWindow () {
 	mainWindow.webContents.openDevTools({
 		mode:"detach" 
 	});
-	mainWindow.setProgressBar(0.5);
 	mainWindow.on('closed', function () {
 		mainWindow = null;
 	})
@@ -121,14 +121,19 @@ ipcMain.on(msg.DOWNLOAD_MAP, async (event, arg) => {
 ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 	let test;
 	//console.log(arg)
+	let timer = Date.now();
 	const {maps, mods,installDir} = campaign;
 	const downloadtracker = {downloads:[], totalProgress:0}
+	const mapsmods = [...mods, ...maps];
+	console.log(mapsmods)
 	maps.map((map) => {
 		const {source, file} = map;
 		console.log(map);
 		const fileName = path.basename(file);
 		const fullFilePath = path.join(installDir, file);
-	
+		const fullFolderPath = path.dirname(fullFilePath);
+		console.log(fullFolderPath);
+		fs.ensureDirSync(fullFolderPath,{ recursive: true });
 		downloadtracker.downloads.push({ file, progress:0})
 		//const data = await 
 		download(source).on('downloadProgress', progress => {
@@ -137,12 +142,42 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 			dlitem.progress = progress.percent
 			console.log("dlitem",dlitem);
 			console.log("downloadtracker.downloads.length",downloadtracker.downloads.length)
-			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => {console.log("reducer e: ", progress); console.log("reducer total: ", total); return total + progress},0.0) / downloadtracker.downloads.length;
+			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => total + progress,0.0) / downloadtracker.downloads.length;
+			console.log("downloadtracker.totalProgress", downloadtracker.totalProgress);
+			mainWindow.setProgressBar(downloadtracker.totalProgress);
+			if((timer - Date.now()) > 1000 || progress.percent >= 1){
+				event.sender.send(msg.DOWNLOAD_CAMPAIGN_STATUS, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
+				timer = Date.now();
+			}
+		}).then(data => {
+			console.log(`writing data to ${fullFilePath}`);
+			fs.writeFileSync(fullFilePath, data)
+		})
+		//
+	});
+
+	mods.map((mod) => {
+		const {source, file} = mod;
+		console.log(mod);
+		const fileName = path.basename(file);
+		const fullFilePath = path.join(installDir, file);
+		const fullFolderPath = path.dirname(fullFilePath);
+		console.log(fullFolderPath);
+		fs.ensureDirSync(fullFolderPath,{ recursive: true });
+		downloadtracker.downloads.push({ file, progress:0})
+		//const data = await 
+		download(source).on('downloadProgress', progress => {
+			console.log(`${file}: ${progress.percent}`);
+			const dlitem = downloadtracker.downloads.find(e => file === e.file)
+			dlitem.progress = progress.percent
+			console.log("dlitem",dlitem);
+			console.log("downloadtracker.downloads.length",downloadtracker.downloads.length)
+			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => total + progress,0.0) / downloadtracker.downloads.length;
 			console.log("downloadtracker.totalProgress", downloadtracker.totalProgress);
 			mainWindow.setProgressBar(downloadtracker.totalProgress);
 			event.sender.send(msg.DOWNLOAD_CAMPAIGN_STATUS, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
 		}).then(data => {
-			console.log("writing data");
+			console.log(`writing data to ${fullFilePath}`);
 			fs.writeFileSync(fullFilePath, data)
 		})
 		//

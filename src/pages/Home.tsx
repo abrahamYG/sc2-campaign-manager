@@ -1,21 +1,25 @@
-import React, { Component } from 'reactn';
+import React, { Component } from 'react';
 import { HashRouter as Router, Route, Link } from "react-router-dom";
 
-import campaignStore from '../api/campaignStore'
-import authorStore from '../api/authorStore'
-
-
-
-import Campaign from '../classes/Campaign'
-
+import Campaign, {ICampaign} from '../classes/Campaign'
 import { setGlobal } from 'reactn';
-import Counter from "../components/Counter.js";
 import NavBar from '../components/NavBar';
 import CampaignPane from '../containers/CampaignPane';
 import MapMakerPane from '../containers/MapMakerPane'
 
-class Home extends Component {
-    constructor(props) {
+
+interface IHomeState {
+	"campaigns": Array<ICampaign>, 
+	"authors": Array<Object>,
+	"selectedCampaign": Object, 
+	"selectedCampaignAuthor": Object,
+	"selectedPane": string
+}
+
+
+
+class Home extends Component<any,IHomeState> {
+    constructor(props:Object) {
 		super(props);
 		const selectedPaneLocal = (localStorage.getItem('selectedPane')!==null)?localStorage.getItem('selectedPane'):"campaigns";
 		const selectedCampaignLocal = (localStorage.getItem('selectedCampaign')!==null)?localStorage.getItem('selectedCampaign'):null;
@@ -27,12 +31,9 @@ class Home extends Component {
 			"selectedPane": selectedPaneLocal
 		};
 		
-		Campaign.getCampaignsRemote().then(campaigns =>this.setState({campaigns}))
-		authorStore.getAuthors((authors)=>{
-			this.setState({
-				"authors":authors
-			});
-		});
+		Campaign.getCampaignsRemote().then((campaigns: any) =>this.setState({campaigns}))
+		
+		
 		
 		/* const conn = new scrapper.MapsterConnection();
 
@@ -44,26 +45,17 @@ class Home extends Component {
 		
 	}
 
-	handleCampaignItemClick = (item) => {
-		localStorage.setItem('selectedCampaign',item.id)
-		this.setState({
-			selectedCampaign:item
-		});
-	};
-
-	handleSelectedPaneClick = (item) => {
-		localStorage.setItem('selectedPane',item)
-		this.setState({
-			selectedPane:item
-		});
-	};
-
-	handleDownloadCampaignClick = (campaign) => {
+	handleDownloadCampaignClick = (campaign:ICampaign) => {
 		console.log("Downloading "+campaign.id);
 	};
 
 	render() {
-		const {selectedPane, campaigns,selectedCampaign, selectedCampaignAuthor} = this.state
+		const {
+			selectedPane, 
+			campaigns,
+			selectedCampaign, 
+			selectedCampaignAuthor
+		} = this.state
 		const onDownloadCampaignClick = this.handleDownloadCampaignClick;
 		return (
 		<Router>
@@ -76,7 +68,6 @@ class Home extends Component {
 						campaigns={campaigns}
 						selectedCampaign={selectedCampaign}
 						selectedCampaignAuthor={selectedCampaignAuthor}
-						onCampaignItemClick={this.handleCampaignItemClick}
 						onDownloadCampaignClick={onDownloadCampaignClick}
 					/>
 				} />
@@ -84,10 +75,9 @@ class Home extends Component {
 					<MapMakerPane
 						campaigns={campaigns}
 						selectedCampaign={selectedCampaign}
-						onCampaignItemClick={this.handleCampaignItemClick}
 					/>
 				 } />
-				<Route path="/settings" exact render={() => <h3>Please select a topic.</h3>} />
+				<Route path="/settings" exact render={() => <h3>Settings</h3>} />
 			</main>
 			</>
 		</Router>

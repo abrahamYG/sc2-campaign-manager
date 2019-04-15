@@ -1,7 +1,9 @@
+const os = require('electron').remote.require('os');
+
 export default {
 	get installDir():string {
 		if (!this._installDir) {
-			this._installDir = "c:/temp/"
+			this._installDir = os.homedir();
 		}
 		return this._installDir
 	},

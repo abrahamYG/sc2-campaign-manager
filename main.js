@@ -92,8 +92,6 @@ ipcMain.on(msg.DOWNLOAD_MAP, async (event, arg) => {
 })
 
 ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
-	let test;
-	//console.log(arg)
 	let timer = Date.now();
 	const {maps, mods,installDir} = campaign;
 	const downloadtracker = {downloads:[], totalProgress:0}

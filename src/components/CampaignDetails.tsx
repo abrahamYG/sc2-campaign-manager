@@ -160,7 +160,7 @@ class CampaignDetails extends Component<any,any> {
 					<Route path="/campaign/maps" render={()=>
 						<dl>
 						{maps.map((map:any) =>
-							<React.Fragment key={map.file}>
+							<React.Fragment key={map.destination}>
 								<dt>{map.name} <button className="btn btn-secondary">Launch</button></dt>
 								<dd>{map.description}</dd>
 							</React.Fragment>

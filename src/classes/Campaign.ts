@@ -23,15 +23,17 @@ export interface ICampaign {
 
 }
 
-export interface IMap {
-	"name":string,
-	"file":string
+interface ISC2Component{
+	"name": string,
+	"description": string,
+	"destination": string,
+	"source": string,
+	"sourceFormat": string,
+	"fileEntry": string
 }
+export interface IMap extends ISC2Component {};
 
-export interface IMod {
-	"name":string,
-	"file":string
-}
+export interface IMod  extends ISC2Component{};
 
 export interface IAuthor {
 	"id":string,
@@ -75,11 +77,11 @@ export default class Campaign {
 		console.log("campaign",campaign);
 
 		const mapsExist = campaign.maps.reduce((existtotal, map) => {
-			return existtotal && fs.existsSync(path.join(installDir,map.file))
+			return existtotal && fs.existsSync(path.join(installDir,map.destination))
 		},true);
 		console.log("mapsExist",mapsExist);
 		const modsExist = campaign.mods.reduce((existtotal, mod) => {
-			return existtotal && fs.existsSync(path.join(installDir,mod.file))
+			return existtotal && fs.existsSync(path.join(installDir,mod.destination))
 		},true);
 		console.log("modsExist",modsExist);
 		installed = mapsExist && modsExist;

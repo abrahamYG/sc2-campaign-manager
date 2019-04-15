@@ -4,7 +4,8 @@ const { session } = require('electron');
 const path = require('path');
 const fs = require('fs-extra');
 const download = require('download');
-
+const os   = require('os');
+const yauzl = require('yauzl');
 //const download = require('./electron/Download');
 //const {download} = require('electron-dl');
 
@@ -44,34 +45,6 @@ function createWindow () {
 }
 
 function initSessionData(){
-	mainWindow.webContents.session.on('will-download', (e, item, webContents) => {
-		filePath = "c:/temp/StarCraftPlus.SC2Mod";
-		item.setSavePath(path.normalize(filePath));
-		console.log(e);
-		console.log(item.getSavePath());
-		item.on('updated', (event, state) => {
-			if (state === 'interrupted') {
-				console.log('Download is interrupted but can be resumed')
-				console.log(item.getSavePath());
-			} else if (state === 'progressing') {
-				if (item.isPaused()) {
-					console.log('Download is paused')
-				} else {
-					console.log(`Received bytes: ${item.getReceivedBytes()}`)
-				}
-			}
-		})
-		item.on('done', (event, state) => {
-			if (state === 'completed') {
-				console.log('Download successfully')
-			} else {
-				console.log(`Download failed: ${state}`)
-			}
-		})
-	}
-	
-	
-	);
 	
 	//mainWindow.webContents.downloadURL("https://github.com/danielthepirate/StarCraftPlus/blob/master/Build/StarCraftPlus.SC2Mod?raw=true");
 }
@@ -105,7 +78,7 @@ ipcMain.on(msg.DOWNLOAD_MAP, async (event, arg) => {
 	const fullFilePath = path.join(filePath, fileName);
 	console.log({fileName, filePath});
 	const win = BrowserWindow.getFocusedWindow();
-
+	
 	const data = await download(source).on('downloadProgress', progress => {
 		// Report download progress
 		console.log(`${fileName}: ${progress.percent}`);
@@ -125,63 +98,85 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 	const {maps, mods,installDir} = campaign;
 	const downloadtracker = {downloads:[], totalProgress:0}
 	const mapsmods = [...mods, ...maps];
-	console.log(mapsmods)
-	maps.map((map) => {
-		const {source, file} = map;
-		console.log(map);
-		const fileName = path.basename(file);
-		const fullFilePath = path.join(installDir, file);
-		const fullFolderPath = path.dirname(fullFilePath);
-		console.log(fullFolderPath);
-		fs.ensureDirSync(fullFolderPath,{ recursive: true });
-		downloadtracker.downloads.push({ file, progress:0})
-		//const data = await 
+	console.log("maps and mods:",mapsmods)
+	const sources = {};
+	mapsmods.map(mod => {
+		const {sourceFormat} = mod;
+		if (!sources[mod.source]){
+			sources[mod.source] = {
+				format: sourceFormat,
+				files:[]
+			}
+		}
+		if(sourceFormat === "zip") {sources[mod.source].files.push(mod);}
+		else{ sources[mod.source].files = mod;}
+		downloadtracker.downloads.push({ source: mod.source, progress:0})
+	});
+	console.log("sources: ",sources)
+	for(let source in sources){
+		console.log("current source:", source);
 		download(source).on('downloadProgress', progress => {
-			console.log(`${file}: ${progress.percent}`);
-			const dlitem = downloadtracker.downloads.find(e => file === e.file)
-			dlitem.progress = progress.percent
-			console.log("dlitem",dlitem);
-			console.log("downloadtracker.downloads.length",downloadtracker.downloads.length)
+			const dlitem = downloadtracker.downloads.find(dl => source === dl.source)
+			dlitem.progress = progress.percent;
 			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => total + progress,0.0) / downloadtracker.downloads.length;
-			console.log("downloadtracker.totalProgress", downloadtracker.totalProgress);
-			mainWindow.setProgressBar(downloadtracker.totalProgress);
+			console.log(downloadtracker);
 			if((timer - Date.now()) > 1000 || progress.percent >= 1){
+				mainWindow.setProgressBar(downloadtracker.totalProgress);
 				event.sender.send(msg.DOWNLOAD_CAMPAIGN_STATUS, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
 				timer = Date.now();
 			}
-		}).then(data => {
-			console.log(`writing data to ${fullFilePath}`);
-			fs.writeFileSync(fullFilePath, data)
+		}).then(data =>{
+			if(sources[source].format==="zip"){
+				const zipBaseDir = installDir;
+				const zipPath = path.join(zipBaseDir, path.basename(source));
+				console.log("zip:", zipPath);
+				fs.writeFileSync(zipPath, data);
+				yauzl.open(zipPath, {lazyEntries: true}, function(err, zipfile) {
+					if (err){ throw err;}
+					zipfile.readEntry();
+					zipfile.on("entry", function(entry) {
+						console.log(entry.fileName);
+						if (/\/$/.test(entry.fileName)){
+							zipfile.readEntry();
+						}
+						else {
+							const entryData = sources[source].files.find(e => entry.fileName === e.fileEntry)
+							if(entryData){
+								const entryBasePath = os.homedir();	
+								const entryBaseName = entryData.destination;
+								const entryFullPath = path.join(entryBasePath,entryBaseName);
+								console.log(entryFullPath)
+								fs.ensureDirSync(path.dirname(entryFullPath));
+								const destStream = fs.createWriteStream(entryFullPath);
+								zipfile.openReadStream(entry, function(err, readStream) {
+									if (err) throw err;
+									readStream.on("end", function() {
+										zipfile.readEntry();
+									});
+									readStream.pipe(destStream);
+								});
+							}
+							else{
+								zipfile.readEntry();
+							}
+						}
+						
+					});
+					zipfile.once("end", function() {
+						zipfile.close();
+					});
+				});
+				
+			}
+			else {
+				const destBaseDir = installDir;
+				const destBasename = sources[source].files.destination;
+				const destPath = path.join(destBaseDir, destBasename);
+				console.log("nozip: ", destPath);
+				fs.ensureDirSync(path.dirname(destPath));
+				fs.writeFileSync(destPath, data);
+			}
 		})
-		//
-	});
-
-	mods.map((mod) => {
-		const {source, file} = mod;
-		console.log(mod);
-		const fileName = path.basename(file);
-		const fullFilePath = path.join(installDir, file);
-		const fullFolderPath = path.dirname(fullFilePath);
-		console.log(fullFolderPath);
-		fs.ensureDirSync(fullFolderPath,{ recursive: true });
-		downloadtracker.downloads.push({ file, progress:0})
-		//const data = await 
-		download(source).on('downloadProgress', progress => {
-			console.log(`${file}: ${progress.percent}`);
-			const dlitem = downloadtracker.downloads.find(e => file === e.file)
-			dlitem.progress = progress.percent
-			console.log("dlitem",dlitem);
-			console.log("downloadtracker.downloads.length",downloadtracker.downloads.length)
-			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => total + progress,0.0) / downloadtracker.downloads.length;
-			console.log("downloadtracker.totalProgress", downloadtracker.totalProgress);
-			mainWindow.setProgressBar(downloadtracker.totalProgress);
-			event.sender.send(msg.DOWNLOAD_CAMPAIGN_STATUS, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
-		}).then(data => {
-			console.log(`writing data to ${fullFilePath}`);
-			fs.writeFileSync(fullFilePath, data)
-		})
-		//
-	});
-	
+	}
 })
 

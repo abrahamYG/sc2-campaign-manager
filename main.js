@@ -107,10 +107,10 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 				format: sourceFormat,
 				files:[]
 			}
+			downloadtracker.downloads.push({ source: mod.source, progress:0})
 		}
 		if(sourceFormat === "zip") {sources[mod.source].files.push(mod);}
 		else{ sources[mod.source].files = mod;}
-		downloadtracker.downloads.push({ source: mod.source, progress:0})
 	});
 	console.log("sources: ",sources)
 	for(let source in sources){

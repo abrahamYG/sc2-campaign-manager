@@ -117,8 +117,8 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 			const dlitem = downloadtracker.downloads.find(dl => source === dl.source)
 			dlitem.progress = progress.percent;
 			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => total + progress,0.0) / downloadtracker.downloads.length;
-			console.log(downloadtracker);
-			if((timer - Date.now()) > 1000 || progress.percent >= 1){
+			if((Date.now() - timer) > 1000 || progress.percent >= 1){
+				console.log("DOWNLOADTRACKER",downloadtracker);
 				mainWindow.setProgressBar(downloadtracker.totalProgress);
 				event.sender.send(msg.DOWNLOAD_CAMPAIGN_STATUS, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
 				timer = Date.now();

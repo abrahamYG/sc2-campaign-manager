@@ -4,7 +4,7 @@ import  ReactMarkdown from 'react-markdown'
 
 import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
 import PropTypes  from 'prop-types';
-//import Lightbox from 'react-lightbox-component';
+import Lightbox from 'react-lightbox-component';
 import DownloadBar from './DownloadBar'
 
 
@@ -120,7 +120,7 @@ class CampaignDetails extends Component<any,any> {
 	
 				<div className="campaign-content-body">
 					<div className="btn-group" role="group" aria-label="...">
-						<NavLink to="/campaign/description" className="btn btn-outline-primary" activeClassName="btn-primary active">
+						<NavLink to="/campaign" className="btn btn-outline-primary" activeClassName="btn-primary active">
 							Description
 						</NavLink>
 						<NavLink to="/campaign/screenshots" className="btn btn-outline-primary" activeClassName="btn-primary active">
@@ -139,9 +139,6 @@ class CampaignDetails extends Component<any,any> {
 					
 					<article>
 					<Route path="/campaign" exact render={()=>
-						<Redirect to="/campaign/description" />
-					} />
-					<Route path="/campaign/description" render={()=>
 						<ReactMarkdown source={description} />
 					} />
 					<Route path="/campaign/screenshots" render={()=>
@@ -151,6 +148,7 @@ class CampaignDetails extends Component<any,any> {
 							<li>{screenshot.src}</li>	
 							</React.Fragment>
 						)}
+						<Lightbox images={screenshots} />
 						</ul>
 					} />
 					

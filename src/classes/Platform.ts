@@ -1,6 +1,6 @@
 const os = require('os');
 
-const platforms:{
+export const platforms:{
 	WINDOWS: string,
 	MAC: string,
 	LINUX: string,
@@ -18,7 +18,7 @@ const platforms:{
 	AIX: 'AIX',
 };
 
-const platformsNames:{
+export const platformsNames:{
 	"win32": string,
 	"darwin": string,
 	"linux": string,
@@ -37,4 +37,4 @@ const platformsNames:{
 	aix: platforms.AIX,
 };
 
-const currentPlatform:string = platformsNames[os.platform()];
+export const currentPlatform:string = platformsNames[os.platform()];

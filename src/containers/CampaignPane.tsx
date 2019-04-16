@@ -1,10 +1,10 @@
 import React from 'react';
+import {ipcRenderer} from 'electron';
+import update from 'immutability-helper';
 import CampaignList from '../components/CampaignList';
 import CampaignDetails from '../components/CampaignDetails';
 import Campaign, {ICampaign} from '../classes/Campaign'
-import {ipcRenderer} from 'electron';
 import msg from '../constants/ipcmessages';
-
 
 interface ICampaignPaneProps {
 	"onDownloadCampaignClick": Function, 
@@ -45,9 +45,21 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 	}
 	
 	componentDidMount(){
-		this.state.campaigns.map(campaign =>{
-			campaign.installed = Campaign.isCampaignInstalled(campaign)
+		const campaigns = [...this.state.campaigns];
+		campaigns.map((campaign, index) =>{
+			const newcampaign = update(campaign, {
+				installed: {$set: Campaign.isCampaignInstalled(campaign)}
+			});
+			campaigns[index] = newcampaign;
+			//campaign.						
 		})
+
+		const newState = update(this.state, {
+			campaigns: {$set: campaigns}
+		})
+
+		this.setState(newState);
+
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_STATUS, (event:any, arg:any) => {
 			const campaigns = [...this.state.campaigns];
 			const index = campaigns.findIndex(c => c.id === arg.campaignId)

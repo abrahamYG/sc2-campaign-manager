@@ -1,8 +1,10 @@
 import './App.scss';
 import React from "reactn";
 import { setGlobal } from 'reactn';
-import Home from "./pages/Home";
 import { hot } from "react-hot-loader";
+import Config from './classes/Config';
+import Home from "./pages/Home";
+import InitialSetup from './pages/InitialSetup'
 
 setGlobal({
 	"campaigns": [], 
@@ -14,7 +16,14 @@ setGlobal({
 });
 
 function App() {
-	return (<Home/>);
+	const loadInitialSetup = !Config.configFileExists();
+	return (
+		<>
+		{loadInitialSetup && <InitialSetup/>}
+		{!loadInitialSetup && <Home/>}
+		</>
+	
+	);
 }
 
 export default hot(module)(App); 

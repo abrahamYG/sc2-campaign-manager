@@ -59,7 +59,7 @@ class CampaignDetails extends Component<any,any> {
 			selectedCampaignAuthor, 
 			onPlayCampaignClick, 
 			onUpdateCampaignClick, 
-			onDownloadCampaignClick,
+			onDownloadCampaignClick
 		} = this.props
 		const campaign = (selectedCampaign)?selectedCampaign:emptyCampaign
 		const {
@@ -89,8 +89,8 @@ class CampaignDetails extends Component<any,any> {
 					<div className="campaign-content-controls btn-group float-right" role="group">
 						{(isCampaignInstalled) &&
 							<React.Fragment>
-								<button onClick={onPlayCampaignClick} className="btn btn-primary">Play</button>
-								<button onClick={onUpdateCampaignClick} className="btn btn-outline-primary">Update</button>
+								<button onClick={() => onPlayCampaignClick(campaign)} className="btn btn-primary">Play</button>
+								<button onClick={() => onUpdateCampaignClick(campaign)} className="btn btn-outline-primary">Update</button>
 							</React.Fragment>
 						}
 						{(!isCampaignInstalled) &&

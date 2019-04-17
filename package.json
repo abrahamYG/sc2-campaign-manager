@@ -14,7 +14,7 @@
   },
   "scripts": {
     "dev": "webpack --watch",
-    "start": "concurrently \"npm:webpack\" \"npm:electron\"",
+    "start": "nf start",
     "webpack": "webpack --watch",
     "electron": "electron .",
     "build": "webpack && electron-builder"
@@ -43,6 +43,7 @@
     "electron": "^4.0.4",
     "electron-builder": "^20.39.0",
     "font-awesome-loader": "^1.0.2",
+    "foreman": "^3.0.1",
     "react-hot-loader": "^4.7.0",
     "sass-loader": "^7.1.0",
     "source-map-loader": "^0.2.4",

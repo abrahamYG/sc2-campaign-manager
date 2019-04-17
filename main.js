@@ -1,4 +1,5 @@
 const {app, BrowserWindow} = require('electron');
+const execFile = require('child_process').execFile;
 const { ipcMain } = require('electron');
 const { session } = require('electron');
 const path = require('path');
@@ -110,23 +111,28 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 		if(sourceFormat === "zip") {sources[mod.source].files.push(mod);}
 		else{ sources[mod.source].files = mod;}
 	});
+	const myPromises = [];
 	console.log("sources: ",sources)
 	for(let source in sources){
 		console.log("current source:", source);
-		download(source).on('downloadProgress', progress => {
+		const promise = download(source).on('downloadProgress', progress => {
 			const dlitem = downloadtracker.downloads.find(dl => source === dl.source)
 			dlitem.progress = progress.percent;
 			downloadtracker.totalProgress = downloadtracker.downloads.reduce((total, {progress}) => total + progress,0.0) / downloadtracker.downloads.length;
 			if((Date.now() - timer) > 1000 || progress.percent >= 1){
-				console.log("DOWNLOADTRACKER",downloadtracker);
+				//console.log("DOWNLOADTRACKER",downloadtracker);
 				mainWindow.setProgressBar(downloadtracker.totalProgress);
 				event.sender.send(msg.DOWNLOAD_CAMPAIGN_STATUS, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
 				timer = Date.now();
 			}
 		}).then(data =>{
+			console.log("finished:", source)
 			if(sources[source].format==="zip"){
 				const zipBaseDir = installDir;
-				const zipPath = path.join(zipBaseDir, path.basename(source));
+				const zipBaseName = path.basename(source)
+				console.log("zipBaseDir:", zipBaseDir)
+				console.log("zipBaseName:", zipBaseName)
+				const zipPath = path.join(zipBaseDir, zipBaseName);
 				console.log("zip:", zipPath);
 				fs.writeFileSync(zipPath, data);
 				yauzl.open(zipPath, {lazyEntries: true}, function(err, zipfile) {
@@ -143,7 +149,7 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 								const entryBasePath = os.homedir();	
 								const entryBaseName = entryData.destination;
 								const entryFullPath = path.join(entryBasePath,entryBaseName);
-								console.log(entryFullPath)
+								console.log("entryFullPath",entryFullPath)
 								fs.ensureDirSync(path.dirname(entryFullPath));
 								const destStream = fs.createWriteStream(entryFullPath);
 								zipfile.openReadStream(entry, function(err, readStream) {
@@ -169,12 +175,31 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 			else {
 				const destBaseDir = installDir;
 				const destBasename = sources[source].files.destination;
+				console.log("destBaseDir:", destBaseDir)
+				console.log("zipBaseName:", zipBaseName)
 				const destPath = path.join(destBaseDir, destBasename);
 				console.log("nozip: ", destPath);
 				fs.ensureDirSync(path.dirname(destPath));
 				fs.writeFileSync(destPath, data);
 			}
+		}).catch((reason) =>{
+			console.log("Rejected promise:", reason)
 		})
+		console.log("promise: ", promise)
+		myPromises.push(promise);
 	}
+	console.log("end loop!")
+	Promise.all(myPromises).then(() => {
+		console.log("All downloads finished?");
+		event.sender.send(msg.DOWNLOAD_CAMPAIGN_FINISH, {campaignId: campaign.id, progress: downloadtracker.totalProgress})
+	});
 })
 
+ipcMain.on(msg.PLAY_CAMPAIGN, async (event, campaign) => {
+	const {command, params} = campaign;
+	console.log(command, params)
+	execFile(campaign.command,[params],function(error, stdout, stderr) {
+		console.log(error)
+		console.log(stdout);
+	});
+});

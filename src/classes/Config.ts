@@ -46,11 +46,19 @@ export default class Config {
 	}
 	static getRunCommand():string {
 		const commands:any = {
-			WINDOWS:"SC2Switcher.exe -run {map} -reloadcheck -speed {speed}",
+			WINDOWS:"SC2Switcher.exe",
 			MAC:"open {map} -a \"sc2switcher\"",
 			LINUX:"wine \"C:\\Program Files (x86)\\StarCraft II\\StarCraft II.exe\""
 		};
 		return Config.configFileExists()? (Config.loadFromDisk().runCommand):commands[currentPlatform];
+	}
+	static getRunParams():string {
+		const params:any = {
+			WINDOWS:"-run {map} -reloadcheck -speed {speed}",
+			MAC:"open {map} -a \"sc2switcher\"",
+			LINUX:"wine \"C:\\Program Files (x86)\\StarCraft II\\StarCraft II.exe\""
+		};
+		return Config.configFileExists()&&Config.loadFromDisk().params? (Config.loadFromDisk().params):params[currentPlatform];
 	}
 	
 }

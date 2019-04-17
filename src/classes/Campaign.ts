@@ -1,5 +1,6 @@
 import {ipcRenderer} from 'electron';
 import { useGlobal } from 'reactn';
+const path = require('electron').remote.require('path');
 
 
 import _campaignsources from '../api/campaign-sources';
@@ -15,6 +16,7 @@ export interface ICampaign {
 	"description":string,
 	"progress":number,
 	"installed":boolean,
+	"entryPoint":string,
 	"maps":Array<IMap>,
 	"mods":Array<IMod>,
 	"lastUpdated":string,
@@ -50,31 +52,48 @@ export default class Campaign {
 		const campaign:Object = await response.json();
 		return campaign;
 	}
+	static getCampaignRunCommand = (campaign:ICampaign):string => {
+		console.group("getCampaignRunCommand");
+		const command = path.join(Campaign.getCampaignsInstallDir(),"/Support64/",Config.getRunCommand());
+		console.log("command", command)
+		console.groupEnd();
+		return command;
+	}
+	static getCampaignRunParams = (campaign:ICampaign):string => {
+		console.group("getCampaignRunParams");
+		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
+		const params = Config.getRunParams().replace("{map}",path.join(Campaign.getCampaignsInstallDir(),entryPoint));
+		console.log("params", params)
+		console.groupEnd();
+		return params;
+	}
+	
 	static getCampaignsRemote = async () => {
 		const campaigns:object = await Promise.all(_campaignsources.map((source:string) => Campaign.getCampaignRemote(source)));
 		return campaigns;
 	}
 
 	static getCampaignsInstallDir = ():string => {
-		return Config.installDir;
+		return Config.getInstallDir();
 	}
 	static getCampaignsInstalled = (campaigns:Array<ICampaign>) => {
 		const installedCampaigns:Array<ICampaign> = []
 		campaigns.map(campaign => {
-			const installedCampaign = {...campaign}
+			const installedCampaign = {...campaign }
 			installedCampaigns.push(installedCampaign)
 			installedCampaign.installed = Campaign.isCampaignInstalled(installedCampaign);
 		})
 		return installedCampaigns;
 	}
 	static isCampaignInstalled = (campaign:ICampaign) => {
+		console.group("isCampaignInstalled")
+		console.log("campaign",campaign);
+
 		let installed = true;
-		const installDir = Config.installDir;
+		const installDir = Campaign.getCampaignsInstallDir();
 		const fs = require('electron').remote.require('fs');
 		const path = require('electron').remote.require('path');
 		
-		console.group("isCampaignInstalled")
-		console.log("campaign",campaign);
 
 		const mapsExist = campaign.maps.reduce((existtotal, map) => {
 			return existtotal && fs.existsSync(path.join(installDir,map.destination))
@@ -91,6 +110,18 @@ export default class Campaign {
 
 	static downloadCampaign = (campaign:ICampaign) => {
 		console.log("downloadCampaign")
-		ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Config.installDir});
+		ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
+	}
+	static playCampaign = (campaign:ICampaign) => {
+		console.group("playCampaign")
+		const data = {
+			...campaign, 
+			installDir:Campaign.getCampaignsInstallDir(), 
+			command: Campaign.getCampaignRunCommand(campaign),
+			params:Campaign.getCampaignRunParams(campaign)
+		};
+		console.log("data", data);
+		ipcRenderer.send(msg.PLAY_CAMPAIGN, data);
+		console.groupEnd();
 	}
 }

@@ -28,7 +28,17 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 			"selectedCampaign": null, 
 			"selectedCampaignAuthor": null
 		};
-		Campaign.getCampaignsRemote().then((campaigns:Array<ICampaign>) =>this.setState({campaigns}))
+		Campaign.getCampaignsRemote().then((campaigns:Array<ICampaign>) =>{
+			campaigns.map((campaign, index) =>{
+				const newcampaign = update(campaign, {
+					installed: {$set: Campaign.isCampaignInstalled(campaign)}
+				});
+				campaigns[index] = newcampaign;
+				//campaign.						
+			})
+			this.setState({campaigns})
+			
+		})
 	}
 	handleCampaignItemClick = (campaign:ICampaign) => {
 		localStorage.setItem('selectedCampaign',campaign.id)
@@ -41,6 +51,13 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 		const {id} = campaign;
 		console.log(`isCampaignInstalled ${id}`,Campaign.isCampaignInstalled(campaign));
 		Campaign.downloadCampaign(campaign);
+		console.groupEnd();
+	}
+	handlePlayClick = (campaign:ICampaign) => {
+		console.group("handlePlayClick")
+		console.log(campaign)
+		const {id} = campaign;
+		Campaign.playCampaign(campaign);
 		console.groupEnd();
 	}
 	
@@ -69,6 +86,15 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 			campaigns[index] = campaign;
 			this.setState({campaigns})
 		});
+		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_FINISH, (event:any, arg:any) => {
+			const campaigns = [...this.state.campaigns];
+			const index = campaigns.findIndex(c => c.id === arg.campaignId)
+			const campaign = campaigns[index];
+			campaign.installed = Campaign.isCampaignInstalled(campaign);
+			console.log("DOWNLOAD_CAMPAIGN_FINISH", campaign)
+			campaigns[index] = campaign;
+			this.setState({campaigns})
+		});
 	}
 	render(){
 		const {selectedCampaign, campaigns} = this.state;
@@ -93,6 +119,7 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 						selectedCampaign={selectedCampaign}
 						selectedCampaignAuthor={selectedCampaignAuthor}
 						onDownloadCampaignClick={this.handleDownloadClick}
+						onPlayCampaignClick={this.handlePlayClick}
 					/>
 					}
 					{(!selectedCampaign) &&

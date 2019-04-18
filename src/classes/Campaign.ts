@@ -46,6 +46,9 @@ export interface IAuthor {
 }
 
 export default class Campaign {
+	static getCampaignSources = ():string => {
+		return _campaignsources.join("\n");
+	}
 	
 	static getCampaignRemote = async (source:string) => {
 		const response:Response = await fetch(source);
@@ -70,7 +73,7 @@ export default class Campaign {
 	}
 	
 	static getCampaignsRemote = async () => {
-		const campaigns:object = await Promise.all(_campaignsources.map((source:string) => Campaign.getCampaignRemote(source)));
+		const campaigns:object = await Promise.all(Config.getSources().map((source:string) => Campaign.getCampaignRemote(source)));
 		return campaigns;
 	}
 

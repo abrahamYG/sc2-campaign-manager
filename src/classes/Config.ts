@@ -5,31 +5,39 @@ const {Registry} = require('electron').remote.require('rage-edit')
 const {currentPlatform, platforms} = require("./Platform")
 const fs = require('fs');
 
+const manifestSource = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign-manager/master/public/sources.json";
 export default class Config {
+	static getConfigFilePath():string{
+		return path.join(app.getPath("userData"), "config.json")
+	}
 	static configFileExists():boolean{
-		const configFile = path.join(app.getPath("userData"), "config.json")
+		const configFile = this.getConfigFilePath();
 		return fs.existsSync(configFile);
 	}
-	
+	static getSourcesRemote = async () => {
+		const response:Response = await fetch(manifestSource);
+		const sources:Array<string> = await response.json();
+		return sources;
+	}
 	static loadFromDisk():any{
 		let configs = {};
-		const configFile = path.join(app.getPath("userData"), "config.json")
-		const data = fs.readFileSync(configFile);
-		configs = JSON.parse(data);
-		
+		console.group("loadFromDisk")
+		if(this.configFileExists()){
+			const configFile = this.getConfigFilePath();
+			console.log("configFile",configFile)
+			const data:Buffer = fs.readFileSync(configFile);
+			console.log("data",data)
+			console.log("data.toString()",data.toString())
+			configs = JSON.parse(data.toString());
+			console.log("configs",configs)
+			console.groupEnd();
+		}
 		return configs;
 	}
 	static writeToDisk(configs:object):boolean{
 		const jsonConfigs = JSON.stringify(configs,null,4);
-		const configFile = path.join(app.getPath("userData"), "config.json")
-		fs.writeFile(configFile, jsonConfigs, 'utf8', (err:any) => {
-			if (err) {
-				console.log("An error occured while writing JSON Object to File.");
-				return console.log(err);
-			}
-		 
-			console.log("JSON file has been saved.");
-		});
+		const configFile = this.getConfigFilePath();
+		fs.writeFileSync(configFile, jsonConfigs);
 		return true;
 	}
 	static installDirFromRegistry:string = "";
@@ -42,6 +50,9 @@ export default class Config {
 		else{
 			//return this.installDir;
 		}
+	}
+	static getSources():Array<string> {
+		return  Config.configFileExists()&&Config.loadFromDisk().campaignSources? (Config.loadFromDisk().campaignSources):[""];
 	}
 	static getInstallDir():string {
 		let dir:any = {

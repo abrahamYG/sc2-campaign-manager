@@ -124,7 +124,7 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 					}
 					{(!selectedCampaign) &&
 						<div>
-						<h3>No campaing selected</h3>
+						<h3>Please select a Campaign</h3>
 						</div>
 					}
 				</section>

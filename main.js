@@ -26,7 +26,7 @@ require('electron-reload')(__dirname, {
 function createWindow () {
 	mainWindow = new BrowserWindow({
 		width: 900,
-		height: 600,
+		height: 720,
 		//frame: false,
 		titleBarStyle:"hidden",
 		webPreferences: {
@@ -35,9 +35,9 @@ function createWindow () {
 	});
 	
 	mainWindow.loadFile('index.html');
-	mainWindow.webContents.openDevTools({
+	/*mainWindow.webContents.openDevTools({
 		mode:"detach" 
-	});
+	});*/
 	mainWindow.on('closed', function () {
 		mainWindow = null;
 	})

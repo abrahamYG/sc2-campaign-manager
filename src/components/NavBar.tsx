@@ -19,7 +19,9 @@ function NavBar(props:NavBarProps) {
 				<ul className="nav nav-pills">
 				<li className="nav-item">
 					<NavLink to="/campaign" className="nav-link" activeClassName="active">
-						Campaigns <span className="campaign-count badge badge-dark">{campaignCount}</span>
+						Campaigns {
+							//<span className="campaign-count badge badge-dark">{campaignCount}</span>
+						}
 					</NavLink>
 				</li>
 				<li className="nav-item">

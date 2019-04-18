@@ -6,7 +6,7 @@ import { setGlobal } from 'reactn';
 import NavBar from '../components/NavBar';
 import CampaignPane from '../containers/CampaignPane';
 import MapMakerPane from '../containers/MapMakerPane'
-
+import SettingsPane from '../containers/SettingsPane'
 
 interface IHomeState {
 	"campaigns": Array<ICampaign>, 
@@ -77,7 +77,7 @@ class Home extends Component<any,IHomeState> {
 						selectedCampaign={selectedCampaign}
 					/>
 				 } />
-				<Route path="/settings" exact render={() => <h3>Settings</h3>} />
+				<Route path="/settings" component={SettingsPane} />
 			</main>
 			</>
 		</Router>

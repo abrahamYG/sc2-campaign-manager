@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter as Router, Route, NavLink, Redirect} from "react-router-dom";
+import { HashRouter as Router, Route, NavLink, Redirect, Switch} from "react-router-dom";
 import  ReactMarkdown from 'react-markdown'
 
 import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
@@ -121,7 +121,7 @@ class CampaignDetails extends Component<any,any> {
 	
 				<div className="campaign-content-body">
 					<div className="btn-group" role="group" aria-label="...">
-						<NavLink to="/campaign" className="btn btn-outline-primary" activeClassName="btn-primary active">
+						<NavLink to="/campaign/description" className="btn btn-outline-primary" activeClassName="btn-primary active">
 							Description
 						</NavLink>
 						<NavLink to="/campaign/screenshots" className="btn btn-outline-primary" activeClassName="btn-primary active">
@@ -139,7 +139,8 @@ class CampaignDetails extends Component<any,any> {
 					</ul>
 					
 					<article>
-					<Route path="/campaign" exact render={()=>
+					<Switch>
+					<Route path="/campaign/description" render={()=>
 						<ReactMarkdown source={description} />
 					} />
 					<Route path="/campaign/screenshots" render={()=>
@@ -166,6 +167,7 @@ class CampaignDetails extends Component<any,any> {
 						)}
 						</dl>
 					} />
+					</Switch>
 					</article>
 				</div>
 			</section>

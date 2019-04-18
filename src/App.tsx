@@ -17,7 +17,7 @@ setGlobal({
 
 function App() {
 	const loadInitialSetup = !Config.configFileExists();
-	const [configured, setConfigured] = useState(false && Config.configFileExists());
+	const [configured, setConfigured] = useState(Config.configFileExists());
 	return (
 		<>
 		{!configured && <InitialSetup onSave={setConfigured}/>}

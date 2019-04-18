@@ -54,15 +54,16 @@ export default class Campaign {
 	}
 	static getCampaignRunCommand = (campaign:ICampaign):string => {
 		console.group("getCampaignRunCommand");
-		const command = path.join(Campaign.getCampaignsInstallDir(),"/Support64/",Config.getRunCommand());
+		const command = Config.getRunCommand();
 		console.log("command", command)
 		console.groupEnd();
 		return command;
 	}
-	static getCampaignRunParams = (campaign:ICampaign):string => {
+	static getCampaignRunParams = (campaign:ICampaign):Array<string> => {
 		console.group("getCampaignRunParams");
 		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
-		const params = Config.getRunParams().replace("{map}",path.join(Campaign.getCampaignsInstallDir(),entryPoint));
+		const params = Config.getRunParams().map(e=>e.replace("{map}",path.join(Campaign.getCampaignsInstallDir(),entryPoint));)
+		
 		console.log("params", params)
 		console.groupEnd();
 		return params;

@@ -1,5 +1,5 @@
 import './App.scss';
-import React from "reactn";
+import React, {useState} from "reactn";
 import { setGlobal } from 'reactn';
 import { hot } from "react-hot-loader";
 import Config from './classes/Config';
@@ -17,10 +17,11 @@ setGlobal({
 
 function App() {
 	const loadInitialSetup = !Config.configFileExists();
+	const [configured, setConfigured] = useState(false && Config.configFileExists());
 	return (
 		<>
-		{loadInitialSetup && <InitialSetup/>}
-		{!loadInitialSetup && <Home/>}
+		{!configured && <InitialSetup onSave={setConfigured}/>}
+		{configured && <Home/>}
 		</>
 	
 	);

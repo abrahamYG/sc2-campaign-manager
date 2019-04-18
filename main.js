@@ -198,7 +198,7 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 ipcMain.on(msg.PLAY_CAMPAIGN, async (event, campaign) => {
 	const {command, params} = campaign;
 	console.log(command, params)
-	execFile(campaign.command,[params],function(error, stdout, stderr) {
+	execFile(campaign.command,params,function(error, stdout, stderr) {
 		console.log(error)
 		console.log(stdout);
 	});

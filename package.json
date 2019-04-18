@@ -4,20 +4,20 @@
   "description": "A Campaign Manager for StarCraft II.  ",
   "main": "main.js",
   "build": {
-    "appId": "sc2-campaign-manager",
+    "appId": "com.sc2mapster.campaignmanager",
     "mac": {
       "category": "demo.app"
     },
     "win": {
-      "target": "zip"
+      "target": "nsis"
     }
   },
   "scripts": {
     "dev": "webpack --watch",
     "start": "nf start",
-    "webpack": "webpack --watch",
+    "webpack": "webpack",
     "electron": "electron .",
-    "build": "webpack && electron-builder"
+    "build": "electron-builder"
   },
   "repository": "https://github.com/abrahamYG/sc2-campaign-manager",
   "keywords": [

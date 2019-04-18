@@ -20,7 +20,7 @@ export default class Config {
 		return configs;
 	}
 	static writeToDisk(configs:object):boolean{
-		const jsonConfigs = JSON.stringify(configs);
+		const jsonConfigs = JSON.stringify(configs,null,4);
 		const configFile = path.join(app.getPath("userData"), "config.json")
 		fs.writeFile(configFile, jsonConfigs, 'utf8', (err:any) => {
 			if (err) {
@@ -32,33 +32,43 @@ export default class Config {
 		});
 		return true;
 	}
+	static installDirFromRegistry:string = "";
 	static async getInstallDirFromRegistry() {
 		if (currentPlatform === platforms.WINDOWS) {
 			const result = await Registry.get('HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\StarCraft II', 'InstallLocation');
-			return result;
+			this.installDirFromRegistry = result? result:os.homedir();
+			return this.installDirFromRegistry;
 		}
 		else{
 			//return this.installDir;
 		}
 	}
 	static getInstallDir():string {
-		return Config.configFileExists()? (Config.loadFromDisk().installDir):os.homedir();
+		let dir:any = {
+			WINDOWS:this.installDirFromRegistry?this.installDirFromRegistry:"C:\\Program Files (x86)\\StarCraft II",
+			MAC:"/Applications/StarCraft II",
+			LINUX:"C:\\Program Files (x86)\\StarCraft II"
+		};
+		console.log("this.installDirFromRegistry",this.installDirFromRegistry);
+		console.log("dir[currentPlatform]",dir[currentPlatform]);
+		return Config.configFileExists()? (Config.loadFromDisk().installDir):dir[currentPlatform];
 	}
 	static getRunCommand():string {
 		const commands:any = {
-			WINDOWS:"SC2Switcher.exe",
-			MAC:"open {map} -a \"sc2switcher\"",
+			WINDOWS:path.join(Config.getInstallDir(),"Support64/" ,"SC2Switcher_x64.exe")
+			MAC:"open {map}",
 			LINUX:"wine \"C:\\Program Files (x86)\\StarCraft II\\StarCraft II.exe\""
 		};
 		return Config.configFileExists()? (Config.loadFromDisk().runCommand):commands[currentPlatform];
 	}
-	static getRunParams():string {
-		const params:any = {
-			WINDOWS:"-run {map} -reloadcheck -speed {speed}",
-			MAC:"open {map} -a \"sc2switcher\"",
-			LINUX:"wine \"C:\\Program Files (x86)\\StarCraft II\\StarCraft II.exe\""
+	static getRunParams():Array<string> {
+		const defaultParams:any = {
+			WINDOWS:'-run {map} -reloadcheck',
+			MAC:"-a \"sc2switcher\"",
+			LINUX:"-run {map} -reloadcheck"
 		};
-		return Config.configFileExists()&&Config.loadFromDisk().params? (Config.loadFromDisk().params):params[currentPlatform];
+		const params = Config.configFileExists()&&Config.loadFromDisk().params? (Config.loadFromDisk().params):defaultParams[currentPlatform];
+		return params.split(" ");
 	}
 	
 }

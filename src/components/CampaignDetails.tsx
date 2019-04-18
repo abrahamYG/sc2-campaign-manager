@@ -21,6 +21,7 @@ const emptyCampaign:ICampaign = {
 	"lastUpdated":"",
 	"patchNotes":[],
 	"screenshots":[],
+	"entryPoint":"",
 	"installed":false
 };
 

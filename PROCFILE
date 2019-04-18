@@ -1,2 +1,2 @@
 electron: npm run electron
-webpack: npm run webpack
+dev: npm run dev

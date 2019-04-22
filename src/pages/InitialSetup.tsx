@@ -14,11 +14,11 @@ export default function InitialSetup(props:any){
 		runParams, setRunParams,
 		disabledForm, setDisabledForm,
 		campaignSources, setCampaignSources,
-	fullForm: true}
+	fullForm: false}
 	const handleSave = ():void => {
 		Config.writeToDisk({
 			installDir, 
-			runCommand, 
+			runCommand:Config.getRunCommand(installDir), 
 			runParams,
 			campaignSources:campaignSources.split("\n")
 		});
@@ -29,7 +29,7 @@ export default function InitialSetup(props:any){
 			const result = await Config.getInstallDirFromRegistry();
 			console.log("getInstallDirFromRegistry", result);
 			setInstallDir((result)?result:Config.getInstallDir());
-			setRunCommand((result)?Config.getRunCommand():runCommand);
+			setRunCommand((result)?Config.getRunCommand(result):runCommand);
 
 			const sources:Array<string> = await Config.getSourcesRemote();
 			setCampaignSources(sources?sources.join("\n"):campaignSources)

@@ -1,6 +1,6 @@
 const os = require('electron').remote.require('os');
 const path = require('electron').remote.require('path');
-const {app} = require('electron').remote.require('electron');
+const {app,dialog} = require('electron').remote.require('electron');
 const {Registry} = require('electron').remote.require('rage-edit')
 const {currentPlatform, platforms} = require("./Platform")
 const fs = require('fs');
@@ -9,6 +9,15 @@ const manifestSource = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign
 export default class Config {
 	static getConfigFilePath():string{
 		return path.join(app.getPath("userData"), "config.json")
+	}
+
+	static showInstallDirOpenDialog(path:string, callback:(filePaths:Array<string>)=>void){
+		const browserWindow:any = null;
+		const options:any = {
+			properties: ["openDirectory"],
+			defaultPath: path
+		}
+		dialog.showOpenDialog(browserWindow, options, callback)
 	}
 	static configFileExists():boolean{
 		const configFile = this.getConfigFilePath();
@@ -44,7 +53,7 @@ export default class Config {
 	static async getInstallDirFromRegistry() {
 		if (currentPlatform === platforms.WINDOWS) {
 			const result = await Registry.get('HKLM\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\StarCraft II', 'InstallLocation');
-			this.installDirFromRegistry = result? result:os.homedir();
+			this.installDirFromRegistry = result? result:"";
 			return this.installDirFromRegistry;
 		}
 		else{
@@ -55,18 +64,20 @@ export default class Config {
 		return  Config.configFileExists()&&Config.loadFromDisk().campaignSources? (Config.loadFromDisk().campaignSources):[""];
 	}
 	static getInstallDir():string {
-		let dir:any = {
-			WINDOWS:this.installDirFromRegistry?this.installDirFromRegistry:"C:\\Program Files (x86)\\StarCraft II",
+		const fromRegistry = this.installDirFromRegistry;
+		const dir:any = {
+			WINDOWS:fromRegistry?fromRegistry:"C:\\Program Files (x86)\\StarCraft II",
 			MAC:"/Applications/StarCraft II",
 			LINUX:"C:\\Program Files (x86)\\StarCraft II"
 		};
-		console.log("this.installDirFromRegistry",this.installDirFromRegistry);
+		console.log("this.installDirFromRegistry",fromRegistry);
 		console.log("dir[currentPlatform]",dir[currentPlatform]);
 		return Config.configFileExists()? (Config.loadFromDisk().installDir):dir[currentPlatform];
 	}
-	static getRunCommand():string {
+	static getRunCommand(baseDir?:string):string {
+
 		const commands:any = {
-			WINDOWS:path.join(Config.getInstallDir(),"Support64/" ,"SC2Switcher_x64.exe")
+			WINDOWS:path.join(baseDir?baseDir:Config.getInstallDir(),"Support64/" ,"SC2Switcher_x64.exe"),
 			MAC:"open {map}",
 			LINUX:"wine \"C:\\Program Files (x86)\\StarCraft II\\StarCraft II.exe\""
 		};

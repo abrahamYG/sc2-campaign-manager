@@ -9,14 +9,12 @@ Uses [electron-react-boilerplate-minimal](https://github.com/f-prime/electron-re
 
 # How to run
 
-3 simple commands.
-
 * `npm install`: Install all required dependencies
 
-* `yarn dev`: Creates the Renderer
-
-* `yarn start`: Creates the Electron Instance
+* `npm run dev`: Creates the Renderer
+* `npm run electron`: Creates the Electron Instance
+* `npm start`: Creates both the renderer and the electron instance.
 
 # Building for Production
 
-`yarn build`
+`npm run build`

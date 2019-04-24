@@ -12,7 +12,7 @@ export default function SettingsForm(props:any){
 	} = props;
 	const openInstallDirDialog = ()=> {
 		Config.showInstallDirOpenDialog(installDir, (filePaths:Array<string>)=>{
-			console.log(filePaths);
+			setInstallDir(filePaths[0]);
 		});
 
 	}

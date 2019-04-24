@@ -1,37 +1,42 @@
 import React, {Component} from 'react';
 import campaignStore from '../api/campaignStore'
-import CampaignList from '../components/CampaignList';
+import ManifestList from '../components/ManifestList';
 import ManifestEditor from '../components/ManifestEditor';
 
-class MapMakerPane extends Component {
-	constructor(props){
+import Campaign, {ICampaign} from '../classes/Campaign'
+
+class MapMakerPane extends Component<any, any> {
+	constructor(props:any){
 		super(props);
 		this.state = {
-			"schema":{},
-			"campaign":{}
-		}
-		campaignStore.getCampaignSchema((schema)=>{
-			this.setState({
-				"schema":schema
-			})
-		});
-		campaignStore.getCampaigns((campaigns)=>{
-			this.setState({
-				"campaign":campaigns[0]
-			})
-		});
-		
+			"campaigns": [], 
+			"authors": null,
+			"selectedCampaign": null, 
+			"selectedCampaignAuthor": null
+		};
+		Campaign.getCampaignsRemote().then((campaigns:Array<ICampaign>) =>{
+			this.setState({campaigns})
+			
+		})
 	}
+	handleCampaignItemClick = (campaign:ICampaign) => {
+		console.group("handleCampaignItemClick")
+		this.setState({selectedCampaign: campaign});
+
+		console.groupEnd();
+	};
+
 	render(){
+		const {selectedCampaign, campaigns} = this.state;
 		const {schema, campaign} = this.state;
-		const {campaigns, selectedCampaign, selectedCampaignAuthor, onCampaignItemClick} = this.props;
+		const {selectedCampaignAuthor, onCampaignItemClick} = this.props;
 		const uiSchema = {};
 		return (
 			<div className="row">
 				<section className="sidebar col-3 bg-secondary pr-0 pl-0">
 					{(campaigns) &&
-					<CampaignList 
-						onClick={onCampaignItemClick} 
+					<ManifestList 
+						onClick={this.handleCampaignItemClick} 
 						campaigns={campaigns}
 						selectedCampaign={selectedCampaign}
 						selectedId={(selectedCampaign)?selectedCampaign.id:""}

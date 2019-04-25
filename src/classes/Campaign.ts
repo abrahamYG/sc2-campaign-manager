@@ -57,7 +57,9 @@ export default class Campaign {
 	}
 	static getCampaignRunCommand = (campaign:ICampaign):string => {
 		console.group("getCampaignRunCommand");
-		const command = Config.getRunCommand();
+		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
+		const entryPointPath = path.join(Campaign.getCampaignsInstallDir(),entryPoint)
+		const command = Config.getRunCommand().replace("{map}",entryPointPath);
 		console.log("command", command)
 		console.groupEnd();
 		return command;
@@ -65,7 +67,8 @@ export default class Campaign {
 	static getCampaignRunParams = (campaign:ICampaign):Array<string> => {
 		console.group("getCampaignRunParams");
 		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
-		const params = Config.getRunParams().map(e=>e.replace("{map}",path.join(Campaign.getCampaignsInstallDir(),entryPoint));)
+		const entryPointPath = path.join(Campaign.getCampaignsInstallDir(),entryPoint)
+		const params = Config.getRunParams().map(e=>e.replace("{map}",entryPointPath);)
 		
 		console.log("params", params)
 		console.groupEnd();

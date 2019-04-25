@@ -78,7 +78,7 @@ export default class Config {
 
 		const commands:any = {
 			WINDOWS:path.join(baseDir?baseDir:Config.getInstallDir(),"Support64/" ,"SC2Switcher_x64.exe"),
-			MAC:"open {map}",
+			MAC:"open",
 			LINUX:"wine \"C:\\Program Files (x86)\\StarCraft II\\StarCraft II.exe\""
 		};
 		return Config.configFileExists()? (Config.loadFromDisk().runCommand):commands[currentPlatform];
@@ -86,7 +86,7 @@ export default class Config {
 	static getRunParams():Array<string> {
 		const defaultParams:any = {
 			WINDOWS:'-run {map} -reloadcheck',
-			MAC:"-a \"sc2switcher\"",
+			MAC:"-a {map} \"sc2switcher\"",
 			LINUX:"-run {map} -reloadcheck"
 		};
 		const params = Config.configFileExists()&&Config.loadFromDisk().params? (Config.loadFromDisk().params):defaultParams[currentPlatform];

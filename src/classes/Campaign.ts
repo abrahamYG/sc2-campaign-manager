@@ -68,7 +68,7 @@ export default class Campaign {
 		console.group("getCampaignRunParams");
 		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
 		const entryPointPath = path.join(Campaign.getCampaignsInstallDir(),entryPoint)
-		const params = Config.getRunParams().map(e=>e.replace("{map}",entryPointPath);)
+		const params = Config.getRunParams().map(e=>e.replace("{map}",entryPointPath))
 		
 		console.log("params", params)
 		console.groupEnd();

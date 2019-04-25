@@ -64,6 +64,7 @@ body{
 	overflow: hidden;
 }
 .campaign-item {
+	transition: background-color 0.25s, color 0.25s;
 	.campaign-thumbnail-container {
 		position:static;
 	}

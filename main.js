@@ -99,18 +99,27 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 	const mapsmods = [...mods, ...maps];
 	console.log("maps and mods:",mapsmods)
 	const sources = {};
-	mapsmods.map(mod => {
-		const {sourceFormat} = mod;
-		if (!sources[mod.source]){
-			sources[mod.source] = {
-				format: sourceFormat,
-				files:[]
+	try {
+		mapsmods.map(mod => {
+			const {sourceFormat} = mod;
+			if (!sources[mod.source]){
+				sources[mod.source] = {
+					format: sourceFormat,
+					files:[]
+				}
+				downloadtracker.downloads.push({ source: mod.source, progress:0})
 			}
-			downloadtracker.downloads.push({ source: mod.source, progress:0})
-		}
-		if(sourceFormat === "zip") {sources[mod.source].files.push(mod);}
-		else{ sources[mod.source].files = mod;}
-	});
+			if(sources[mod.source].format === "zip") {
+				sources[mod.source].files.push(mod);
+			}
+			else{ 
+				sources[mod.source].files = mod;
+			}
+		});
+	} catch (error) {
+		console.log("Error!:",error);
+	}
+	
 	const myPromises = [];
 	console.log("sources: ",sources)
 	for(let source in sources){
@@ -146,7 +155,7 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 						else {
 							const entryData = sources[source].files.find(e => entry.fileName === e.fileEntry)
 							if(entryData){
-								const entryBasePath = os.homedir();	
+								const entryBasePath = installDir;	
 								const entryBaseName = entryData.destination;
 								const entryFullPath = path.join(entryBasePath,entryBaseName);
 								console.log("entryFullPath",entryFullPath)

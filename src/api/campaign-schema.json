@@ -89,15 +89,6 @@
 			],
 			"pattern": "^(.*)$"
 		},
-		"maps1": {
-			"$id": "#/properties/maps1",
-			"type": "integer",
-			"title": "The Maps1 Schema",
-			"default": 0,
-			"examples": [
-				14
-			]
-		},
 		"author": {
 			"$id": "#/properties/author",
 			"type": "string",

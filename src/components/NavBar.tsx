@@ -10,7 +10,7 @@ interface NavBarProps {
 function NavBar(props:NavBarProps) {
 	const {selectedPane} = props;
 	const [campaignCount,setCampaignCount] = useGlobal("campaignCount");
-	const filterActive = "installed"
+	const filterActive = (Math.random()>0.5)?"updated":"installed";
 	const filterInstalledActive = ((filterActive === "installed")?" active":" ");
 	const filterUpdatedActive = ((filterActive === "updated")?" active":" ");
 	return (

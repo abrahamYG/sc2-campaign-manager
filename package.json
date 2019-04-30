@@ -1,6 +1,6 @@
 {
   "name": "sc2-campaign-manager",
-  "version": "0.2.0-alpha",
+  "version": "0.3.0-alpha",
   "description": "A Campaign Manager for StarCraft II.  ",
   "main": "main.js",
   "build": {

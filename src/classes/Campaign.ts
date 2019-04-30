@@ -3,8 +3,6 @@ import { useGlobal } from 'reactn';
 const path = require('electron').remote.require('path');
 
 
-import _campaignsources from '../api/campaign-sources';
-//import _campaigns from '../api/campaigns.json'
 
 import Config from './Config';
 import msg from '../constants/ipcmessages';
@@ -46,10 +44,7 @@ export interface IAuthor {
 }
 
 export default class Campaign {
-	static getCampaignSources = ():string => {
-		return _campaignsources.join("\n");
-	}
-	
+		
 	static getCampaignRemote = async (source:string) => {
 		const response:Response = await fetch(source);
 		const campaign:Object = await response.json();

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import campaignStore from '../api/campaignStore'
 import ManifestList from '../components/ManifestList';
 import ManifestEditor from '../components/ManifestEditor';
 

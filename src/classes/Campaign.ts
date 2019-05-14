@@ -42,7 +42,6 @@ export interface IAuthor {
 	"campaigns":Array<object>
 
 }
-
 export default class Campaign {
 		
 	static getCampaignRemote = async (source:string) => {

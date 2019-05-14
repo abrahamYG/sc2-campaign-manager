@@ -16,7 +16,7 @@ function CampaignListItem(props:any) {
 			<div className="campaign-item-details">
 				<h5 className="campaign-item-shortname mb-1">{shortName}</h5>
 				<small>By {author}</small>
-				<p className="campaign-item-summary mb-1">{summmary}</p>
+				{/* <p className="campaign-item-summary mb-1">{summmary}</p> */}
 			</div>
 			<DownloadBar progress={downloadProgress} />
 		</button>

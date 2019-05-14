@@ -4,9 +4,9 @@ import  ReactMarkdown from 'react-markdown'
 
 import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
 import PropTypes  from 'prop-types';
-import Lightbox from 'react-lightbox-component';
+//import Lightbox as Lightbox2 from 'react-lightbox-component';
 import DownloadBar from './DownloadBar'
-
+import Lightbox from 'react-images'
 
 
 
@@ -66,6 +66,7 @@ class CampaignDetails extends Component<any,any> {
 		const {
 			id, 
 			name, 
+			author,
 			description, 
 			maps, 
 			lastUpdated, 
@@ -75,7 +76,7 @@ class CampaignDetails extends Component<any,any> {
 			progress
 		} = campaign;
 
-		const author:IAuthor = (selectedCampaignAuthor)?selectedCampaignAuthor:emptyAuthor;
+		//const author:IAuthor = (selectedCampaignAuthor)?selectedCampaignAuthor:emptyAuthor;
 		const isCampaignInstalled:boolean = installed;//!Campaign.isCampaignInstalled(campaign);
 
 		const onDownloadClick = onDownloadCampaignClick;
@@ -91,7 +92,7 @@ class CampaignDetails extends Component<any,any> {
 						{(isCampaignInstalled) &&
 							<React.Fragment>
 								<button onClick={() => onPlayCampaignClick(campaign)} className="btn btn-primary">Play</button>
-								<button onClick={() => onUpdateCampaignClick(campaign)} className="btn btn-outline-primary">Update</button>
+								{/* <button onClick={() => onUpdateCampaignClick(campaign)} className="btn btn-outline-primary">Update</button> */}
 							</React.Fragment>
 						}
 						{(!isCampaignInstalled) &&
@@ -101,9 +102,10 @@ class CampaignDetails extends Component<any,any> {
 					</div>
 					<h1 className="campaign-content-title">{name}</h1>
 					<p className="campaign-content-subtitle">
-						By <a href={"mailto:"+author.email}>{author.name}</a>. Last Updated: <time>{lastUpdated}</time>
+						By <a href={"mailto:"+author}>{author}</a>. Last Updated: <time>{lastUpdated}</time>
 					</p>
-					<p className="campaign-content-subtitle">
+					{/*
+						<p className="campaign-content-subtitle">
 						Tagged under 
 						{(installed) &&
 							<span> <i className="campaign-filter-installed"></i>Installed</span>
@@ -112,6 +114,7 @@ class CampaignDetails extends Component<any,any> {
 							<span> <i className="campaign-filter-updated"></i>Updated</span>
 						}
 					</p>
+					*/}
 					{(!isCampaignInstalled) &&
 						<DownloadBar progress={downloadProgress} />
 					}
@@ -121,7 +124,7 @@ class CampaignDetails extends Component<any,any> {
 	
 				<div className="campaign-content-body">
 					<div className="btn-group" role="group" aria-label="...">
-						<NavLink to="/campaign/description" className="btn btn-outline-primary" activeClassName="btn-primary active">
+						<NavLink to="/campaign" exact className="btn btn-outline-primary" activeClassName="btn-primary active">
 							Description
 						</NavLink>
 						<NavLink to="/campaign/screenshots" className="btn btn-outline-primary" activeClassName="btn-primary active">
@@ -140,18 +143,11 @@ class CampaignDetails extends Component<any,any> {
 					
 					<article>
 					<Switch>
-					<Route path="/campaign/description" render={()=>
+					<Route path="/campaign" exact render={()=>
 						<ReactMarkdown source={description} />
 					} />
 					<Route path="/campaign/screenshots" render={()=>
-						<ul>
-						{screenshots.map((screenshot:any) =>
-							<React.Fragment key={screenshot.src}>
-							<li>{screenshot.src}</li>	
-							</React.Fragment>
-						)}
 						<Lightbox images={screenshots} />
-						</ul>
 					} />
 					
 					<Route path="/campaign/patchNotes" render={()=>

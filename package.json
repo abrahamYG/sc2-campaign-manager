@@ -1,6 +1,6 @@
 {
   "name": "sc2-campaign-manager",
-  "version": "0.3.0-alpha",
+  "version": "0.4.0-alpha",
   "description": "A Campaign Manager for StarCraft II.  ",
   "main": "main.js",
   "build": {
@@ -58,6 +58,8 @@
     "@types/electron": "^1.6.10",
     "@types/react": "^16.8.13",
     "@types/react-dom": "^16.8.3",
+    "@types/react-images": "^0.5.1",
+    "@types/react-jsonschema-form": "^1.3.2",
     "@types/react-router-dom": "^4.3.1",
     "babel-core": "^6.26.3",
     "bootstrap": "^4.3.1",
@@ -73,6 +75,7 @@
     "rage-edit": "^1.2.0",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
+    "react-images": "^0.5.19",
     "react-jsonschema-form": "^1.3.0",
     "react-lightbox-component": "^1.2.1",
     "react-markdown": "^4.0.6",

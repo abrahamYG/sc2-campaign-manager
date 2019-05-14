@@ -35,6 +35,7 @@ function NavBar(props:NavBarProps) {
 					</NavLink>
 				</li>    
 				</ul>
+				{/*
 				<ul className="navbar-nav">
 				<li className="nav-item">
 					<a className={"nav-link"+filterInstalledActive} href="#">
@@ -47,6 +48,7 @@ function NavBar(props:NavBarProps) {
 					</a>
 				</li>
 				</ul>
+				*/}
 			</div>  
 		</nav>
 	);

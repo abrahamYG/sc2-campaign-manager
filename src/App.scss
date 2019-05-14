@@ -11,6 +11,11 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
+progress[value="0"] {
+	/* Reset the default appearance */
+	visibility: hidden;
+  }
+
 progress[value] {
 	/* Reset the default appearance */
 	-webkit-appearance: none;

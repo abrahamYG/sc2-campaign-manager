@@ -63,6 +63,12 @@ export default class Config {
 	static getSources():Array<string> {
 		return  Config.configFileExists()&&Config.loadFromDisk().campaignSources? (Config.loadFromDisk().campaignSources):[""];
 	}
+	static getLocalSources():Array<string> {
+		const basePath = path.join(app.getPath("userData"), "manifests/");
+		const localSources = fs.readdirSync(basePath)
+		console.log("getLocalSources",localSources);
+		return  localSources;//Config.configFileExists()&&Config.loadFromDisk().campaignLocalSources? (Config.loadFromDisk().campaignLocalSources):[""];
+	}
 	static getInstallDir():string {
 		const fromRegistry = this.installDirFromRegistry;
 		const dir:any = {

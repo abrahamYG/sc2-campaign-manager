@@ -36,9 +36,10 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 				campaigns[index] = newcampaign;
 				//campaign.						
 			})
-			this.setState({campaigns})
+			//this.setState({campaigns})
 			
 		})
+		Campaign.getCampaignsLocal().then((campaigns: any) =>this.setState({campaigns}))
 	}
 	handleCampaignItemClick = (campaign:ICampaign) => {
 		localStorage.setItem('selectedCampaign',campaign.id)
@@ -67,7 +68,7 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 			const newcampaign = update(campaign, {
 				installed: {$set: Campaign.isCampaignInstalled(campaign)}
 			});
-			campaigns[index] = newcampaign;
+			campaigns[index] = newcampaign
 			//campaign.						
 		})
 

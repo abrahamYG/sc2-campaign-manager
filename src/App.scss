@@ -11,6 +11,11 @@
     background: rgba(255, 255, 255, 0.08);
 }
 
+body{
+	overflow: hidden;
+}
+
+
 progress[value="0"] {
 	/* Reset the default appearance */
 	visibility: hidden;
@@ -65,9 +70,6 @@ progress[value]::-webkit-progress-value {
 .campaign-item-summary{
 	font-size: 14px;
 }
-body{
-	overflow: hidden;
-}
 .campaign-item {
 	transition: background-color 0.25s, color 0.25s;
 	.campaign-thumbnail-container {
@@ -76,4 +78,13 @@ body{
 	.campaign-item-details {
 		margin-left: 72px;
 	}
+}
+
+.campaign-form-map {
+	margin-left: 1rem;
+}
+
+.settings-pane{
+	overflow: scroll;
+	max-height: 70vh;
 }

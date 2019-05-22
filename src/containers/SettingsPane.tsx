@@ -8,41 +8,39 @@ export default function SettingsPane(props:any){
 	const [runCommand, setRunCommand] = useState(Config.getRunCommand());
 	const [runParams, setRunParams] = useState(Config.getRunParams().join(" "));
 	const [campaignSources, setCampaignSources] = useState(Config.getSources().join("\n"));
+	const [campaignLocalSources, setCampaignLocalSources] = useState(Config.getLocalSources().join("\n"));
 	const [disabledForm, setDisabledForm] = useState(false);
 	const formProps ={installDir, setInstallDir,
 		runCommand, setRunCommand,
 		runParams, setRunParams,
 		disabledForm, setDisabledForm,
 		campaignSources, setCampaignSources,
+		campaignLocalSources, setCampaignLocalSources,
 	fullForm: true}
 	const handleSave = ():void => {
 		Config.writeToDisk({
 			installDir, 
 			runCommand, 
 			runParams,
-			campaignSources:campaignSources.split("\n")
+			campaignSources:campaignSources.split("\n"),
+			campaignLocalSources:campaignLocalSources.split("\n")
 		});
 	}
 	return(
-		<>
+		<div>
 		<header className="modal-header">
-						<h5 className="modal-title">Settings</h5>
-						{/*
-						<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-						*/}
-					</header>
-					<section className="modal-body">
-						<p></p>
-							<SettingsForm {...formProps} />
-					</section>
+			<h5 className="modal-title">Settings</h5>
+		</header>
+		<section className="settings-pane modal-body">
+			<p></p>
+			<SettingsForm {...formProps} />
+		</section>
 		<footer className="modal-footer">
 		{/*
 			<button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
 		*/}
 			<button onClick={handleSave} type="button" className="btn btn-primary">Save changes</button>
 		</footer>
-		</>
+		</div>
 	);
 }

@@ -147,7 +147,14 @@ class CampaignDetails extends Component<any,any> {
 						<ReactMarkdown source={description} />
 					} />
 					<Route path="/campaign/screenshots" render={()=>
-						<Lightbox images={screenshots} />
+						<section>
+							<ul>
+							{screenshots.map((screenshot:any)=>{
+								return (<li key={screenshot.src}><img src={screenshot.src} /></li>);
+							})
+							}
+							</ul>
+						</section>
 					} />
 					
 					<Route path="/campaign/patchNotes" render={()=>

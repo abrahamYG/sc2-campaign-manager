@@ -18,11 +18,11 @@ let mainWindow;
 //DownloadManager.register();
 
 
-require('electron-reload')(__dirname, {
+/*require('electron-reload')(__dirname, {
 	// Note that the path to electron may vary according to the main file
 	electron: require(`${__dirname}/node_modules/electron`)
 });
-
+*/
 function createWindow () {
 	mainWindow = new BrowserWindow({
 		width: 900,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { HashRouter as Router, Route, NavLink } from "react-router-dom";
 import { useGlobal } from 'reactn';
-import { use } from 'builder-util';
+//import { use } from 'builder-util';
 
 interface NavBarProps {
 	"selectedPane"?:string

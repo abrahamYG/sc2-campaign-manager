@@ -31,7 +31,8 @@ class Home extends Component<any,IHomeState> {
 			"selectedPane": selectedPaneLocal
 		};
 		
-		Campaign.getCampaignsRemote().then((campaigns: any) =>this.setState({campaigns}))
+		//Campaign.getCampaignsLocal().then((campaigns: any) =>this.setState({campaigns}))
+		//Campaign.getCampaignsRemote().then((campaigns: any) =>this.setState({campaigns}))
 		
 		
 		

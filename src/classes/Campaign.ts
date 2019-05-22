@@ -1,8 +1,15 @@
 import {ipcRenderer} from 'electron';
 import { useGlobal } from 'reactn';
-const path = require('electron').remote.require('path');
+import path from 'path';
+import fs from 'fs';
+import {promisify} from 'util';
+//const path = require('electron').remote.require('path');
+//const fs = require('electron').remote.require('fs');
+//const { promisify } = require('electron').remote.require('util')
+const {app,dialog} = require('electron').remote.require('electron');
 
-
+const readFileAsync = promisify(fs.readFile)
+const writeFileAsync = promisify(fs.writeFile)
 
 import Config from './Config';
 import msg from '../constants/ipcmessages';
@@ -20,8 +27,8 @@ export interface ICampaign {
 	"lastUpdated":string,
 	"patchNotes":Array<object>,
 	"screenshots":Array<string>,
-
-}
+	[key: string]: string|number|object|boolean|IMap|IMod
+};
 
 interface ISC2Component{
 	"name": string,
@@ -43,10 +50,22 @@ export interface IAuthor {
 
 }
 export default class Campaign {
+	static getCampaignLocal = async (source:string) => {
+		console.group("getCampaignLocal")
+		const fullPath = path.join(app.getPath("userData"),"manifests/", source)
 		
+		console.log(fullPath); 
+		const response:Buffer = await readFileAsync(fullPath);
+		const json = response.toString();
+		console.log(json);
+		const campaign:Object = JSON.parse(json);
+		console.log(campaign);
+		console.groupEnd();
+		return campaign;
+	}
 	static getCampaignRemote = async (source:string) => {
 		const response:Response = await fetch(source);
-		const campaign:Object = await response.json();
+		const campaign:ICampaign = await response.json();
 		return campaign;
 	}
 	static getCampaignRunCommand = (campaign:ICampaign):string => {
@@ -70,10 +89,17 @@ export default class Campaign {
 	}
 	
 	static getCampaignsRemote = async () => {
-		const campaigns:object = await Promise.all(Config.getSources().map((source:string) => Campaign.getCampaignRemote(source)));
+		const campaigns:Array<ICampaign> = await Promise.all(Config.getSources().map((source:string) => Campaign.getCampaignRemote(source)));
 		return campaigns;
 	}
-
+	static getCampaignsLocal = async () => {
+		console.group("getCampaignsLocal");
+		const campaigns:object = await Promise.all(Config.getLocalSources().map((source:string) => {
+			return Campaign.getCampaignLocal(source) 
+		}));
+		console.groupEnd();
+		return campaigns;
+	}
 	static getCampaignsInstallDir = ():string => {
 		return Config.getInstallDir();
 	}
@@ -92,10 +118,6 @@ export default class Campaign {
 
 		let installed = true;
 		const installDir = Campaign.getCampaignsInstallDir();
-		const fs = require('electron').remote.require('fs');
-		const path = require('electron').remote.require('path');
-		
-
 		const mapsExist = campaign.maps.reduce((existtotal, map) => {
 			return existtotal && fs.existsSync(path.join(installDir,map.destination))
 		},true);
@@ -124,5 +146,15 @@ export default class Campaign {
 		console.log("data", data);
 		ipcRenderer.send(msg.PLAY_CAMPAIGN, data);
 		console.groupEnd();
+	}
+	static emptyMap = ():IMap => {
+		return {
+			"name": "",
+			"description": "",
+			"destination": "",
+			"source": "",
+			"sourceFormat": "",
+			"fileEntry": ""
+		};
 	}
 }

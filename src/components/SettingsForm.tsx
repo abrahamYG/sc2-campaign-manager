@@ -7,6 +7,7 @@ export default function SettingsForm(props:any){
 		runCommand, setRunCommand,
 		runParams, setRunParams,
 		campaignSources, setCampaignSources,
+		campaignLocalSources, setCampaignLocalSources,
 		disabledForm, setDisabledForm,
 		fullForm
 	} = props;
@@ -86,7 +87,7 @@ export default function SettingsForm(props:any){
 					These are parameters used to run the map and set additional settings when running StarcCraft II.
 					If you are not sure what to write here, you can happily leave the default values.
 				</small>
-				<label htmlFor="runcommand">Campaign Sources</label>
+				<label htmlFor="campaignSources">Campaign Sources</label>
 				<textarea 
 					name="campaignSources"
 					aria-describedby="campaignSourcesHelp" 
@@ -97,6 +98,20 @@ export default function SettingsForm(props:any){
 				/>
 				<small id="campaignSourcesHelp" className="form-text text-muted">
 					These are the sources the app uses to retrieve campaign data.
+					If you have an specific set of sources you are free to add them, 
+					otherwise you can leave the default settings just fine.
+				</small>
+				<label htmlFor="campaignLocalSources">Campaign Local Sources</label>
+				<textarea 
+					name="campaignLocalSources"
+					aria-describedby="campaignLocalSourcesHelp" 
+					value={campaignLocalSources} 
+					onChange={e => setCampaignLocalSources(e.target.value)} 
+					className="form-control"
+					rows={4}
+				/>
+				<small id="campaignLocalSourcesHelp" className="form-text text-muted">
+					These are the sources from your local system the app uses to retrieve campaign data.
 					If you have an specific set of sources you are free to add them, 
 					otherwise you can leave the default settings just fine.
 				</small>

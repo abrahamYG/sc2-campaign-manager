@@ -4,7 +4,15 @@ import ManifestEditor from '../components/ManifestEditor';
 
 import Campaign, {ICampaign} from '../classes/Campaign'
 
-class MapMakerPane extends Component<any, any> {
+
+interface IMapMakerPaneState{
+	"campaigns": Array<ICampaign>, 
+	"authors": any,
+	"selectedCampaign": ICampaign, 
+	"selectedCampaignAuthor": any
+}
+
+class MapMakerPane extends Component<any, IMapMakerPaneState> {
 	constructor(props:any){
 		super(props);
 		this.state = {
@@ -13,7 +21,7 @@ class MapMakerPane extends Component<any, any> {
 			"selectedCampaign": null, 
 			"selectedCampaignAuthor": null
 		};
-		Campaign.getCampaignsRemote().then((campaigns:Array<ICampaign>) =>{
+		Campaign.getCampaignsLocal().then((campaigns:Array<ICampaign>) =>{
 			this.setState({campaigns})
 			
 		})
@@ -25,9 +33,19 @@ class MapMakerPane extends Component<any, any> {
 		console.groupEnd();
 	};
 
+	setCampaign = (campaign:ICampaign) => {
+		const campaigns = [...this.state.campaigns];
+		const index = campaigns.findIndex(v => v.id === campaign.id);
+		console.log("setCampaign", campaign);
+		console.log("setCampaign", campaigns);
+		campaigns[index] = campaign;
+		this.setState({campaigns, selectedCampaign:campaign})
+
+	};
+
 	render(){
 		const {selectedCampaign, campaigns} = this.state;
-		const {schema, campaign} = this.state;
+		//const {schema, campaign} = this.state;
 		const {selectedCampaignAuthor, onCampaignItemClick} = this.props;
 		const uiSchema = {};
 		return (
@@ -46,11 +64,8 @@ class MapMakerPane extends Component<any, any> {
 				<section className="manifest-editor-pane col bg-light">
 					{(selectedCampaign) &&
 						<ManifestEditor
-							schema={schema}
-							uiSchema={uiSchema}
-							itemData={selectedCampaign}
-							selectedCampaign={selectedCampaign}
-							selectedCampaignAuthor={selectedCampaignAuthor}
+							campaign={ {...selectedCampaign} }
+							setCampaign={this.setCampaign}
 						/>
 					}
 					{(!selectedCampaign) &&

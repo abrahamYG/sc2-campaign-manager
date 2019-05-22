@@ -8,12 +8,14 @@ export default function InitialSetup(props:any){
 	const [runCommand, setRunCommand] = useState(Config.getRunCommand());
 	const [runParams, setRunParams] = useState(Config.getRunParams().join(" "));
 	const [campaignSources, setCampaignSources] = useState(Config.getSources().join("\n"));
+	const [campaignLocalSources, setCampaignLocalSources] = useState(Config.getLocalSources().join("\n"));
 	const [disabledForm, setDisabledForm] = useState(true);
 	const formProps ={installDir, setInstallDir,
 		runCommand, setRunCommand,
 		runParams, setRunParams,
 		disabledForm, setDisabledForm,
 		campaignSources, setCampaignSources,
+		campaignLocalSources, setCampaignLocalSources,
 	fullForm: false}
 	const handleSave = ():void => {
 		Config.writeToDisk({

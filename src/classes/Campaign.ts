@@ -1,5 +1,4 @@
 import {ipcRenderer} from 'electron';
-import { useGlobal } from 'reactn';
 import path from 'path';
 import fs from 'fs';
 import {promisify} from 'util';
@@ -158,3 +157,5 @@ export default class Campaign {
 		};
 	}
 }
+
+export const playCampaign = Campaign.playCampaign;

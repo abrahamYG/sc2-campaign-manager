@@ -3,7 +3,6 @@ import { HashRouter as Router, Route, NavLink, Redirect, Switch} from "react-rou
 import  ReactMarkdown from 'react-markdown'
 
 import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
-import PropTypes  from 'prop-types';
 //import Lightbox as Lightbox2 from 'react-lightbox-component';
 import DownloadBar from './DownloadBar'
 import Lightbox from 'react-images'
@@ -148,12 +147,11 @@ class CampaignDetails extends Component<any,any> {
 					} />
 					<Route path="/campaign/screenshots" render={()=>
 						<section>
-							<ul>
-							{screenshots.map((screenshot:any)=>{
-								return (<li key={screenshot.src}><img src={screenshot.src} /></li>);
+						{
+							screenshots.map((screenshot:any)=>{
+								return (<figure key={screenshot.src}><img style={{"maxWidth": "100%"}} src={screenshot.src} /></figure>);
 							})
-							}
-							</ul>
+						}
 						</section>
 					} />
 					

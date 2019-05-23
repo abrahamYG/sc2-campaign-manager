@@ -5,10 +5,17 @@ import CampaignList from '../components/CampaignList';
 import CampaignDetails from '../components/CampaignDetails';
 import Campaign, {ICampaign} from '../classes/Campaign'
 import msg from '../constants/ipcmessages';
-
+import  {ICampaignState} from '../redux/types';
+import { connect } from "react-redux";
+import {setCampaigns} from '../redux/actions'
+import {AppState} from "../redux/store";
 interface ICampaignPaneProps {
-	"onDownloadCampaignClick": Function, 
-	"selectedCampaignAuthor": Object
+	"campaigns":Array<ICampaign>,
+	"selectedCampaign":ICampaign,
+	"setCampaigns"?:(campaigns:Array<ICampaign>)=>void,
+	"selectedCampaignAuthor":object
+	"onDownloadCampaignClick": (campaign:ICampaign) =>void
+
 }
 
 interface ICampaignPaneState {
@@ -18,9 +25,9 @@ interface ICampaignPaneState {
 	"selectedCampaignAuthor": Object
 }
 
-class CampaignPane extends React.Component<any, ICampaignPaneState> {
+class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneState> {
 	
-	constructor(props:any){
+	constructor(props:ICampaignPaneProps){
 		super(props);
 		this.state = {
 			"campaigns": [], 
@@ -34,16 +41,21 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 					installed: {$set: Campaign.isCampaignInstalled(campaign)}
 				});
 				campaigns[index] = newcampaign;
-				//campaign.						
+				//campaign.	
+
 			})
 			//this.setState({campaigns})
 			
 		})
-		Campaign.getCampaignsLocal().then((campaigns: any) =>this.setState({campaigns}))
+		Campaign.getCampaignsLocal().then((campaigns: Array<ICampaign>) =>{
+			//this.setState({campaigns})
+			props.setCampaigns(campaigns);
+
+		})
 	}
 	handleCampaignItemClick = (campaign:ICampaign) => {
 		localStorage.setItem('selectedCampaign',campaign.id)
-		this.setState({selectedCampaign: campaign});
+		//this.setState({selectedCampaign: campaign});
 	};
 
 	handleDownloadClick = (campaign:ICampaign) => {
@@ -63,23 +75,14 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 	}
 	
 	componentDidMount(){
-		const campaigns = [...this.state.campaigns];
-		campaigns.map((campaign, index) =>{
-			const newcampaign = update(campaign, {
-				installed: {$set: Campaign.isCampaignInstalled(campaign)}
-			});
-			campaigns[index] = newcampaign
-			//campaign.						
-		})
-
-		const newState = update(this.state, {
-			campaigns: {$set: campaigns}
-		})
-
-		this.setState(newState);
+		const campaigns = this.props.campaigns.map((campaign, index) =>{
+			return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}
+		});
+		setCampaigns(campaigns);
+		//this.setState({campaigns});
 
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_STATUS, (event:any, arg:any) => {
-			const campaigns = [...this.state.campaigns];
+			const campaigns = [...this.props.campaigns];
 			const index = campaigns.findIndex(c => c.id === arg.campaignId)
 			const campaign = campaigns[index];
 			campaign.progress = arg.progress.toFixed(2);
@@ -98,9 +101,9 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 		});
 	}
 	render(){
-		const {selectedCampaign, campaigns} = this.state;
+		const {} = this.state;
+		const {selectedCampaign,campaigns} = this.props
 		console.log(this.state)
-		const {selectedCampaignAuthor, onDownloadCampaignClick} = this.props;
 		return (
 			<div className="row">
 				<section className="sidebar col-3 bg-secondary pr-0 pl-0">
@@ -118,7 +121,6 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 					{(selectedCampaign) &&
 					<CampaignDetails 
 						selectedCampaign={selectedCampaign}
-						selectedCampaignAuthor={selectedCampaignAuthor}
 						onDownloadCampaignClick={this.handleDownloadClick}
 						onPlayCampaignClick={this.handlePlayClick}
 					/>
@@ -134,4 +136,14 @@ class CampaignPane extends React.Component<any, ICampaignPaneState> {
 	}
 }
 
-export default CampaignPane;
+
+const mapStateToProps = (state:AppState, ownprops: ICampaignPaneProps):any => {
+	const {campaignState} = state
+	return {...ownprops,...campaignState};
+};
+
+export default connect(
+	mapStateToProps,//mapStateToProps,
+	{setCampaigns}
+  )(CampaignPane);
+//export default CampaignList

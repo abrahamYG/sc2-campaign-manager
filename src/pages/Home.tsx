@@ -11,7 +11,7 @@ import SettingsPane from '../containers/SettingsPane'
 interface IHomeState {
 	"campaigns": Array<ICampaign>, 
 	"authors": Array<Object>,
-	"selectedCampaign": Object, 
+	"selectedCampaign": ICampaign, 
 	"selectedCampaignAuthor": Object,
 	"selectedPane": string
 }
@@ -65,6 +65,7 @@ class Home extends Component<any,IHomeState> {
 			<main className="container-fluid w-100 h-100">
 				<Route path="/" exact component={CampaignPane} />
 				<Route path="/campaign" render={()=>
+					
 					<CampaignPane 
 						campaigns={campaigns}
 						selectedCampaign={selectedCampaign}

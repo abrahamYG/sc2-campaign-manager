@@ -5,8 +5,9 @@ const { session } = require('electron');
 const path = require('path');
 const fs = require('fs-extra');
 const download = require('download');
-const os   = require('os');
+//const os   = require('os');
 const yauzl = require('yauzl');
+const { default: installExtension, REACT_DEVELOPER_TOOLS,REDUX_DEVTOOLS } = require('electron-devtools-installer');
 //const download = require('./electron/Download');
 //const {download} = require('electron-dl');
 
@@ -14,6 +15,8 @@ const yauzl = require('yauzl');
 const msg = require('./src/constants/ipcmessages');
 
 let mainWindow;
+
+
 
 //DownloadManager.register();
 
@@ -34,6 +37,12 @@ function createWindow () {
 		}
 	});
 	
+	installExtension(REACT_DEVELOPER_TOOLS)
+		.then((name) => console.log(`Added Extension:  ${name}`))
+		.catch((err) => console.log('An error occurred: ', err));
+	installExtension(REDUX_DEVTOOLS)
+		.then((name) => console.log(`Added Extension:  ${name}`))
+		.catch((err) => console.log('An error occurred: ', err));
 	mainWindow.loadFile('index.html');
 	/*mainWindow.webContents.openDevTools({
 		mode:"detach" 
@@ -41,6 +50,7 @@ function createWindow () {
 	mainWindow.on('closed', function () {
 		mainWindow = null;
 	})
+
 	
 	
 }

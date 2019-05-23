@@ -6,23 +6,18 @@ import Config from './classes/Config';
 import Home from "./pages/Home";
 import InitialSetup from './pages/InitialSetup'
 
-setGlobal({
-	"campaigns": [], 
-	"installedCampaigns":{},
-	"authors": null,
-	"selectedCampaign": null, 
-	"selectedCampaignAuthor": null,
-	"campaignCount":0
-});
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
 
 function App() {
 	const loadInitialSetup = !Config.configFileExists();
 	const [configured, setConfigured] = useState(Config.configFileExists());
 	return (
-		<>
+		<Provider store={store}>
 		{!configured && <InitialSetup onSave={setConfigured}/>}
 		{configured && <Home/>}
-		</>
+		</Provider>
 	
 	);
 }

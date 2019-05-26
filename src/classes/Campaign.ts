@@ -156,6 +156,22 @@ export default class Campaign {
 			"fileEntry": ""
 		};
 	}
+	static emptyCampaign = ():ICampaign => {
+		return {
+			"id":"",
+			"name":"",
+			"progress":0,
+			"author":"",
+			"description":"",
+			"maps":[],
+			"mods":[],
+			"lastUpdated":"",
+			"patchNotes":[],
+			"screenshots":[],
+			"entryPoint":"",
+			"installed":false
+		};
+	}
 }
 
 export const playCampaign = Campaign.playCampaign;

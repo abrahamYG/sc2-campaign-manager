@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { HashRouter as Router, Route, Link } from "react-router-dom";
 
 import Campaign, {ICampaign} from '../classes/Campaign'
-import { setGlobal } from 'reactn';
 import NavBar from '../components/NavBar';
 import CampaignPane from '../containers/CampaignPane';
 import MapMakerPane from '../containers/MapMakerPane'

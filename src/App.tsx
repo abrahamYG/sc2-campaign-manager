@@ -1,5 +1,5 @@
 import './App.scss';
-import React, {useState} from "reactn";
+import React, {useState} from "react";
 import { setGlobal } from 'reactn';
 import { hot } from "react-hot-loader";
 import Config from './classes/Config';

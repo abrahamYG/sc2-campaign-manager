@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter as Router, Route, NavLink } from "react-router-dom";
-import { useGlobal } from 'reactn';
 //import { use } from 'builder-util';
 
 interface NavBarProps {
@@ -9,7 +8,6 @@ interface NavBarProps {
 
 function NavBar(props:NavBarProps) {
 	const {selectedPane} = props;
-	const [campaignCount,setCampaignCount] = useGlobal("campaignCount");
 	const filterActive = (Math.random()>0.5)?"updated":"installed";
 	const filterInstalledActive = ((filterActive === "installed")?" active":" ");
 	const filterUpdatedActive = ((filterActive === "updated")?" active":" ");

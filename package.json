@@ -75,6 +75,7 @@
     "jquery": "^3.4.0",
     "lodash": "^4.17.11",
     "node-sass": "^4.11.0",
+    "open-iconic": "^1.1.1",
     "popper.js": "^1.15.0",
     "rage-edit": "^1.2.0",
     "react": "^16.8.6",

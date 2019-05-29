@@ -6,6 +6,14 @@ const {currentPlatform, platforms} = require("./Platform")
 const fs = require('fs');
 
 const manifestSource = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign-manager/master/public/sources.json";
+export interface IConfig {
+	installDir:string, 
+	runCommand:string, 
+	runParams:string,
+	campaignSources:Array<string>
+	campaignLocalSources:Array<string>
+}
+
 export default class Config {
 	static getConfigFilePath():string{
 		return path.join(app.getPath("userData"), "config.json")

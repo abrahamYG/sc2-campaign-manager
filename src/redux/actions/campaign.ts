@@ -1,5 +1,5 @@
-import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_FILTER, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL } from "./types/actionTypes";
-import { ICampaign } from "../classes/Campaign";
+import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_FILTER, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL } from "../types/actions";
+import { ICampaign } from "../../classes/Campaign";
 
 let nextTodoId = 0;
 

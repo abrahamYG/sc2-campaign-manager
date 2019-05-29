@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import Config from '../classes/Config'
+import Config, {IConfig} from '../classes/Config'
 import SettingsForm from '../components/SettingsForm'
+import { connect } from "react-redux";
+import { AppState } from '../redux/store';
+import {setConfig} from '../redux/actions'
 
 
-export default function SettingsPane(props:any){
+export const SettingsPane = (props:any) =>{
 	const [installDir, setInstallDir] = useState(Config.getInstallDir());
 	const [runCommand, setRunCommand] = useState(Config.getRunCommand());
 	const [runParams, setRunParams] = useState(Config.getRunParams().join(" "));
 	const [campaignSources, setCampaignSources] = useState(Config.getSources().join("\n"));
 	const [campaignLocalSources, setCampaignLocalSources] = useState(Config.getLocalSources().join("\n"));
 	const [disabledForm, setDisabledForm] = useState(false);
+	const {config, onClick} = props
+	
 	const formProps ={installDir, setInstallDir,
 		runCommand, setRunCommand,
 		runParams, setRunParams,
@@ -44,3 +49,23 @@ export default function SettingsPane(props:any){
 		</div>
 	);
 }
+
+
+const mapStateToProps = (state:AppState,ownProps:any):any => {
+	const {configState} = state;
+	return configState;
+};
+
+
+const mapDispatchToProps = (dispatch:any) => {
+	return {
+		onClick: (config:IConfig) => {
+			dispatch(setConfig(config));
+		}
+	};
+};
+
+export default connect(
+	mapStateToProps,//mapStateToProps,
+	mapDispatchToProps
+  )(SettingsPane);

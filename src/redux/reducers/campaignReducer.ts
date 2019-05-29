@@ -1,4 +1,4 @@
-import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL } from "../types/actionTypes";
+import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL } from "../types/actions";
 import {ICampaignState} from '../types'
 import _ from 'lodash';
 

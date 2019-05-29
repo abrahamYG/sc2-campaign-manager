@@ -1,7 +1,10 @@
 import React from 'react';
-import Config from '../classes/Config'
+import Config, {IConfig} from '../classes/Config'
+import { connect } from "react-redux";
+import { AppState } from '../redux/store';
+import {setConfig} from '../redux/actions'
 
-export default function SettingsForm(props:any){
+const SettingsForm = (props:any) => {
 	const {
 		installDir, setInstallDir,
 		runCommand, setRunCommand,
@@ -9,7 +12,7 @@ export default function SettingsForm(props:any){
 		campaignSources, setCampaignSources,
 		campaignLocalSources, setCampaignLocalSources,
 		disabledForm, setDisabledForm,
-		fullForm
+		fullForm, config
 	} = props;
 	const openInstallDirDialog = ()=> {
 		Config.showInstallDirOpenDialog(installDir, (filePaths:Array<string>)=>{
@@ -121,3 +124,23 @@ export default function SettingsForm(props:any){
 	);
 
 }
+
+
+const mapStateToProps = (state:AppState,ownProps:any):any => {
+	const {configState} = state;
+	return configState;
+};
+
+
+const mapDispatchToProps = (dispatch:any) => {
+	return {
+		onClick: (config:IConfig) => {
+			dispatch(setConfig(config));
+		}
+	};
+};
+
+export default connect(
+	mapStateToProps,//mapStateToProps,
+	null
+  )(SettingsForm);

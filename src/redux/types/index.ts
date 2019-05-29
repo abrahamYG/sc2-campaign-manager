@@ -1,5 +1,5 @@
 import {ICampaign} from '../../classes/Campaign'
-
+import {IConfig} from  '../../classes/Config'
 export interface ICampaignCollection {
 	[key: string]: ICampaign
 }
@@ -11,4 +11,8 @@ export interface ICampaignState {
 	campaignIds:Array<string>,
 	selectedCampaign:ICampaign,
 	selectedId: string
+}
+
+export interface IConfigState {
+	config:IConfig
 }

@@ -13,7 +13,7 @@ const CampaignListItem = (props:any) => {
 	return (
 		<button type="button" className={"campaign-item list-group-item list-group-item-action"+((selectedId === id)?" active":"")} onClick={()=>onClick(campaign)} >
 			<figure className="campaign-thumbnail-container float-left mb-0">
-				<img width="64" height="64" alt="" className="campaign-thumbnail" src={thumbnail} />
+				<img width="64" height="64" alt="" className="campaign-thumbnail border-0 rounded-circle" src={thumbnail} />
 			</figure>
 			<div className="campaign-item-details">
 				<h5 className="campaign-item-shortname mb-1">{shortName}</h5>

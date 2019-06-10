@@ -9,8 +9,10 @@ export interface ICampaignState {
 	campaignsLocal:Array<ICampaign>,
 	campaignsById:ICampaignCollection,
 	campaignIds:Array<string>,
-	selectedCampaign:ICampaign,
-	selectedId: string
+	selectedId: string,
+	selectedIdLocal:string,
+	selectedIndex:number,
+	selectedIndexLocal:number
 }
 
 export interface IConfigState {

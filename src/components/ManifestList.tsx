@@ -1,39 +1,30 @@
 import React from 'react';
 import { ICampaign } from '../classes/Campaign';
+import { connect, MapStateToProps } from "react-redux";
+import { AppState } from '../redux/store';
+import {setConfig} from '../redux/actions'
+import ManifestListItem from './ManifestListItem';
 
-
-function ManifestListItem(props:any) {
-	console.log("ManifestListItem",props)
-	const {campaign, selectedId} = props;
-	const {id, thumbnail, author, shortName, summmary, progress} = campaign;
-	const downloadProgress = (progress)?progress:0;
-	return (
-		<button type="button" className={"campaign-item list-group-item list-group-item-action"+((selectedId === id)?" active":"")} onClick={() => props.onClick(campaign)} >
-			<h5 className="campaign-item-shortname mb-1">{shortName}</h5>
-		</button>
-	);
-}
 
 
 interface IManifestListProps{
-	"campaigns":Array<ICampaign>, 
-	"selectedCampaign":ICampaign, 
-	"selectedId":string, 
-	"onClick":(campaign:ICampaign)=>void,
+	"campaigns"?:Array<ICampaign>, 
+	"selectedIndex"?:number, 
+	"onClick"?:(campaign:ICampaign)=>void,
 	
 }
 
-export default function ManifestList (props:IManifestListProps) {
-	const {campaigns, selectedId, onClick} = props;
+const ManifestList = (props:IManifestListProps) => {
+	const {campaigns, selectedIndex} = props;
 	console.log("ManifestList",props)
 	return (
 		<nav className="campaign-list-pane list-group list-group-flush">
-			{campaigns.map((campaign:ICampaign) =>
+			{campaigns.map((campaign,index) =>
 				<ManifestListItem 
 					key={campaign.id} 
+					index={index}
 					campaign={campaign} 
-					onClick={onClick} 
-					selectedId={selectedId} 
+					selectedIndex={selectedIndex} 
 				/>
 			)}
 		</nav>
@@ -41,3 +32,22 @@ export default function ManifestList (props:IManifestListProps) {
 	);
 	
 }
+
+
+
+
+const mapStateToProps:MapStateToProps<IManifestListProps,IManifestListProps,AppState> = (state,ownProps) => {
+	const {campaignState} = state;
+	const {campaignsLocal,selectedIndexLocal} = campaignState
+	const props: typeof ownProps = {
+		"campaigns":campaignsLocal, 
+		"selectedIndex":selectedIndexLocal
+	}
+	
+	return {...ownProps, ...props};
+};
+
+export default connect(
+	mapStateToProps,//mapStateToProps,
+	null
+  )(ManifestList);

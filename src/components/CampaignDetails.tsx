@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { FC } from 'react';
 import { HashRouter as Router, Route, NavLink, Redirect, Switch} from "react-router-dom";
 import  ReactMarkdown from 'react-markdown'
 
@@ -6,6 +6,8 @@ import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
 //import Lightbox as Lightbox2 from 'react-lightbox-component';
 import DownloadBar from './DownloadBar'
 import Lightbox from 'react-images'
+import { AppState } from '../redux/store';
+import { MapStateToProps, MapDispatchToProps, connect } from 'react-redux';
 
 
 const emptyAuthor:IAuthor = {
@@ -31,22 +33,21 @@ function PatchNotes(props:any){
 }
 
 interface ICampaignDetailsProps {
-	"selectedCampaign":ICampaign, 
+	"campaign"?:ICampaign, 
 	"selectedCampaignAuthor"?:IAuthor, 
 	"onPlayCampaignClick":(campaign:ICampaign)=>void, 
 	"onUpdateCampaignClick"?:(campaign:ICampaign)=>void, 
 	"onDownloadCampaignClick":(campaign:ICampaign)=>void
 }
 
-function CampaignDetails (props:ICampaignDetailsProps) {
+const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 	const { 
-		selectedCampaign, 
 		selectedCampaignAuthor, 
 		onPlayCampaignClick, 
 		onUpdateCampaignClick, 
 		onDownloadCampaignClick
 	} = props
-	const campaign = (selectedCampaign)?selectedCampaign:Campaign.emptyCampaign();
+	const campaign = (props.campaign)?props.campaign:Campaign.emptyCampaign();
 	const {
 		id, 
 		name, 
@@ -91,10 +92,10 @@ function CampaignDetails (props:ICampaignDetailsProps) {
 				{/*
 					<p className="campaign-content-subtitle">
 					Tagged under 
-					{(installed) &&
+					{(isCampaignInstalled) &&
 						<span> <i className="campaign-filter-installed"></i>Installed</span>
 					}
-					{(!installed) &&
+					{(!isCampaignInstalled) &&
 						<span> <i className="campaign-filter-updated"></i>Updated</span>
 					}
 				</p>
@@ -162,4 +163,29 @@ function CampaignDetails (props:ICampaignDetailsProps) {
 	);
 }
 
-export default CampaignDetails;
+
+
+	
+const mapStateToProps:MapStateToProps<ICampaignDetailsProps,ICampaignDetailsProps,AppState> = (state,ownProps) => {
+	const {campaignState} = state;
+	const {selectedIndex, campaigns} = campaignState
+	const props = {
+		"campaign":campaigns[selectedIndex],
+		"index": selectedIndex
+	}
+	return {...ownProps, ...props};
+};
+
+const mapDispatchToProps:MapDispatchToProps<ICampaignDetailsProps,ICampaignDetailsProps> = (dispatch,ownProps) => {
+	return {
+		...ownProps,
+		/*setCampaign: (campaign, index) => {
+			return dispatch(setCampaignLocal(campaign,index));
+		}*/
+	};
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps,
+  )(CampaignDetails);

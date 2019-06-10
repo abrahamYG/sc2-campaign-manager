@@ -3,7 +3,8 @@ const path = require('electron').remote.require('path');
 const {app,dialog} = require('electron').remote.require('electron');
 const {Registry} = require('electron').remote.require('rage-edit')
 const {currentPlatform, platforms} = require("./Platform")
-const fs = require('fs');
+//const fs = require('fs');
+import fs from 'fs'	
 
 const manifestSource = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign-manager/master/public/sources.json";
 export interface IConfig {
@@ -73,7 +74,8 @@ export default class Config {
 	}
 	static getLocalSources():Array<string> {
 		const basePath = path.join(app.getPath("userData"), "manifests/");
-		const localSources = fs.readdirSync(basePath)
+		const localSources:Array<string> = (fs.existsSync(basePath))?fs.readdirSync(basePath).map(source => path.join(basePath,source)):[];
+
 		console.log("getLocalSources",localSources);
 		return  localSources;//Config.configFileExists()&&Config.loadFromDisk().campaignLocalSources? (Config.loadFromDisk().campaignLocalSources):[""];
 	}

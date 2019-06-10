@@ -6,13 +6,13 @@ import CampaignDetails from '../components/CampaignDetails';
 import Campaign, {ICampaign} from '../classes/Campaign'
 import msg from '../constants/ipcmessages';
 import  {ICampaignState} from '../redux/types';
-import { connect } from "react-redux";
+import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import {setCampaigns} from '../redux/actions'
 import {AppState} from "../redux/store";
 interface ICampaignPaneProps {
 	"campaigns":Array<ICampaign>,
 	"selectedCampaign":ICampaign,
-	"setCampaigns"?:(campaigns:Array<ICampaign>)=>void,
+	"setCampaigns"?:typeof setCampaigns,
 	"selectedCampaignAuthor":object
 	"onDownloadCampaignClick": (campaign:ICampaign) =>void
 
@@ -35,22 +35,10 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 			"selectedCampaign": null, 
 			"selectedCampaignAuthor": null
 		};
-		Campaign.getCampaignsRemote().then((campaigns:Array<ICampaign>) =>{
-			campaigns.map((campaign, index) =>{
-				const newcampaign = update(campaign, {
-					installed: {$set: Campaign.isCampaignInstalled(campaign)}
-				});
-				campaigns[index] = newcampaign;
-				//campaign.	
-
-			})
-			//this.setState({campaigns})
-			
-		})
-		Campaign.getCampaignsLocal().then((campaigns: Array<ICampaign>) =>{
-			//this.setState({campaigns})
-			props.setCampaigns(campaigns);
-
+		Campaign.getCampaignsRemote().then((campaigns) =>{
+			props.setCampaigns(campaigns.map(
+				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
+			));
 		})
 	}
 	handleCampaignItemClick = (campaign:ICampaign) => {
@@ -78,9 +66,9 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 		const campaigns = this.props.campaigns.map((campaign, index) =>{
 			return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}
 		});
-		setCampaigns(campaigns);
+		this.props.setCampaigns(campaigns);
 		//this.setState({campaigns});
-
+		
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_STATUS, (event:any, arg:any) => {
 			const campaigns = [...this.props.campaigns];
 			const index = campaigns.findIndex(c => c.id === arg.campaignId)
@@ -88,6 +76,7 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 			campaign.progress = arg.progress.toFixed(2);
 			console.log("DOWNLOAD_CAMPAIGN_STATUS", campaign)
 			campaigns[index] = campaign;
+			this.props.setCampaigns(campaigns)
 			this.setState({campaigns})
 		});
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_FINISH, (event:any, arg:any) => {
@@ -97,30 +86,23 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 			campaign.installed = Campaign.isCampaignInstalled(campaign);
 			console.log("DOWNLOAD_CAMPAIGN_FINISH", campaign)
 			campaigns[index] = campaign;
+			this.props.setCampaigns(campaigns)
 			this.setState({campaigns})
 		});
 	}
 	render(){
-		const {} = this.state;
 		const {selectedCampaign,campaigns} = this.props
 		console.log(this.state)
 		return (
 			<div className="row">
 				<section className="sidebar col-3 bg-secondary pr-0 pl-0">
-					{(campaigns) &&
-					<CampaignList 
-						onClick={this.handleCampaignItemClick} 
-						campaigns={campaigns}
-						selectedCampaign={selectedCampaign}
-						selectedId={(selectedCampaign)?selectedCampaign.id:""}
-						
-					/>
-					}
+				{(campaigns) &&
+					<CampaignList />
+				}
 				</section>
 				<section className="campaign-details-pane col bg-light">
 					{(selectedCampaign) &&
 					<CampaignDetails 
-						selectedCampaign={selectedCampaign}
 						onDownloadCampaignClick={this.handleDownloadClick}
 						onPlayCampaignClick={this.handlePlayClick}
 					/>
@@ -137,13 +119,28 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 }
 
 
-const mapStateToProps = (state:AppState, ownprops: ICampaignPaneProps):any => {
+const mapStateToProps:MapStateToProps<ICampaignPaneProps,ICampaignPaneProps,AppState> = (state, ownprops) => {
 	const {campaignState} = state
-	return {...ownprops,...campaignState};
+	const {campaigns, selectedIndex} = campaignState;
+	return {
+		...ownprops,
+		...campaignState,
+		selectedCampaign:campaigns[selectedIndex]
+	};
+};
+
+
+const mapDispatchToProps:MapDispatchToProps<ICampaignPaneProps,ICampaignPaneProps> = (dispatch,ownProps) => {
+	return {
+		...ownProps,
+		setCampaigns: (campaigns) => {
+			return dispatch(setCampaigns(campaigns));
+		}
+	};
 };
 
 export default connect(
 	mapStateToProps,//mapStateToProps,
-	{setCampaigns}
+	mapDispatchToProps,
   )(CampaignPane);
 //export default CampaignList

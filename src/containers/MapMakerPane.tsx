@@ -3,7 +3,19 @@ import ManifestList from '../components/ManifestList';
 import ManifestEditor from '../components/ManifestEditor';
 
 import Campaign, {ICampaign} from '../classes/Campaign'
+import { setCampaignsLocal, selectCampaignLocal } from '../redux/actions/campaign';
+import { MapDispatchToProps, connect, MapStateToProps } from 'react-redux';
+import { AppState } from '../redux/store';
 
+
+interface IMapMakerPaneProps{
+	"campaigns": Array<ICampaign>, 
+	"authors": any,
+	"selectedIndex"?: number, 
+	"selectedCampaignAuthor": any
+	selectCampaignLocal:typeof selectCampaignLocal
+	setCampaignsLocal:typeof setCampaignsLocal
+}
 
 interface IMapMakerPaneState{
 	"campaigns": Array<ICampaign>, 
@@ -12,63 +24,27 @@ interface IMapMakerPaneState{
 	"selectedCampaignAuthor": any
 }
 
-class MapMakerPane extends Component<any, IMapMakerPaneState> {
-	constructor(props:any){
+class MapMakerPane extends Component<IMapMakerPaneProps, IMapMakerPaneState> {
+	constructor(props:IMapMakerPaneProps){
 		super(props);
-		this.state = {
-			"campaigns": [], 
-			"authors": null,
-			"selectedCampaign": null, 
-			"selectedCampaignAuthor": null
-		};
-		Campaign.getCampaignsLocal().then((campaigns:Array<ICampaign>) =>{
-			this.setState({campaigns})
-			
+		Campaign.getCampaignsLocal().then((campaigns) =>{
+			props.setCampaignsLocal(campaigns)
 		})
 	}
-	handleCampaignItemClick = (campaign:ICampaign) => {
-		console.group("handleCampaignItemClick")
-		this.setState({selectedCampaign: campaign});
-
-		console.groupEnd();
-	};
-
-	setCampaign = (campaign:ICampaign) => {
-		const campaigns = [...this.state.campaigns];
-		const index = campaigns.findIndex(v => v.id === campaign.id);
-		console.log("setCampaign", campaign);
-		console.log("setCampaign", campaigns);
-		campaigns[index] = campaign;
-		this.setState({campaigns, selectedCampaign:campaign})
-
-	};
-
 	render(){
-		const {selectedCampaign, campaigns} = this.state;
-		//const {schema, campaign} = this.state;
-		const {selectedCampaignAuthor, onCampaignItemClick} = this.props;
-		const uiSchema = {};
+		const {selectedIndex, campaigns} = this.props;
 		return (
 			<div className="row">
 				<section className="sidebar col-3 bg-secondary pr-0 pl-0">
 					{(campaigns) &&
-					<ManifestList 
-						onClick={this.handleCampaignItemClick} 
-						campaigns={campaigns}
-						selectedCampaign={selectedCampaign}
-						selectedId={(selectedCampaign)?selectedCampaign.id:""}
-						
-					/>
+					<ManifestList />
 					}
 				</section>
 				<section className="manifest-editor-pane col bg-light">
-					{(selectedCampaign) &&
-						<ManifestEditor
-							campaign={ {...selectedCampaign} }
-							setCampaign={this.setCampaign}
-						/>
+					{(selectedIndex>=0) &&
+						<ManifestEditor />
 					}
-					{(!selectedCampaign) &&
+					{(selectedIndex<0) &&
 						<div className="pure-u">
 							<p>No data Loaded</p>
 						</div>
@@ -80,4 +56,35 @@ class MapMakerPane extends Component<any, IMapMakerPaneState> {
 
 }
 
-export default MapMakerPane;
+
+
+const mapStateToProps:MapStateToProps<IMapMakerPaneProps,IMapMakerPaneProps,AppState> = (state,ownProps) => {
+	const {campaignState} = state;
+	const {campaignsLocal,selectedIndexLocal,selectedIdLocal} = campaignState
+	const props = {
+		"campaigns":campaignsLocal, 
+		"selectedIndex":selectedIndexLocal, 
+		"selectedId":selectedIdLocal
+	}
+	
+	return {...ownProps, ...props};
+};
+
+const mapDispatchToProps:MapDispatchToProps<IMapMakerPaneProps,IMapMakerPaneProps> = (dispatch,ownProps) => {
+	return {
+		...ownProps,
+		setCampaignsLocal: (campaigns) => {
+			return dispatch(setCampaignsLocal(campaigns));
+		},
+		selectCampaignLocal: (campaign,index) => {
+			return dispatch(selectCampaignLocal(campaign,index));
+		}
+	};
+};
+
+
+
+export default connect(
+	mapStateToProps,//mapStateToProps,
+	mapDispatchToProps
+  )(MapMakerPane);

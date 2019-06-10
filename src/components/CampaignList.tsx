@@ -6,27 +6,24 @@ import {ICampaignState} from '../redux/types'
 import { connect } from "react-redux";
 import { AppState } from '../redux/store';
 interface ICampaignListProps{
-	"campaigns":Array<ICampaign>, 
-	"selectedCampaign":ICampaign, 
-	"selectedId":string, 
-	"onClick"?:(campaign:ICampaign)=>void,
-	
+	"campaigns"?:Array<ICampaign>, 
+	"selectedIndex"?:number,
+	"selectedId"?:string
 }
 
 
 
 const CampaignList = (props:ICampaignListProps) => {
-	const {onClick} = props;
-	const {campaigns, selectedId} = props;
+	const {campaigns, selectedIndex} = props;
 	console.log("CampaignList",props)
 	return (
 		<nav className="campaign-list-pane list-group list-group-flush">
-			{campaigns.map((campaign) =>
+			{campaigns.map((campaign,index) =>
 				<CampaignListItem 
 					key={campaign.id} 
+					index={index}
 					campaign={campaign} 
-					onClick={onClick} 
-					selectedId={selectedId} 
+					selectedIndex={selectedIndex} 
 				/>
 			)}
 		</nav>
@@ -38,7 +35,7 @@ const CampaignList = (props:ICampaignListProps) => {
 
 const mapStateToProps = (state:AppState,ownProps:ICampaignListProps):ICampaignListProps => {
 	const {campaignState} = state;
-	return campaignState;
+	return {...ownProps, ...campaignState};
 };
 
 export default connect(

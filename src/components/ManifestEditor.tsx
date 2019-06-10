@@ -1,138 +1,20 @@
 import React, { ChangeEvent } from 'react';
 import Form from 'react-jsonschema-form';
 import Campaign, { ICampaign, IMap } from '../classes/Campaign';
+import { MapStateToProps, MapDispatchToProps, connect } from 'react-redux';
+import { AppState } from '../redux/store';
+import { setCampaignLocal } from '../redux/actions/campaign';
+import ManifestEditorMapItem from './ManifestEditorMapItem';
 
-interface IMapItemProps{
-	"index":string,
-	"map": IMap,
-	"setCampaignMap":(map:IMap)=>void
-}
-
-function MapItem(props:IMapItemProps){
-	const {map, index, setCampaignMap} = props;
-	const {name,destination,description, fileEntry, source, sourceFormat} = map;
-	const onChange = (e:ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLTextAreaElement>|ChangeEvent<HTMLSelectElement>)=>{
-		console.log(e);
-		const newMap = {
-			...map,
-			[e.currentTarget.name]:e.currentTarget.value
-		}
-		console.log(newMap)
-		setCampaignMap(newMap);
-	};
-
-	return (
-		<div className="card border-secondary mb-3 mr-0 ml-1">
-  			<div className="card-header text-white bg-secondary">
-				Map
-				<button className="btn btn-primary float-right" type="button" data-toggle="collapse" data-target={`map-${index}-body`} aria-expanded="false" aria-controls="collapseExample">
-    				Collapse
-  				</button>
-  			</div>
-  			<div className="card-body mr-3" id={`map-${index}-body`}>
-				<h5 className="card-title">Map {index}</h5>
-				
-				<fieldset className="form-group campaign-form-map">
-					<div className="form-group row">
-					<label htmlFor={`map-${index}-name`} className="col-sm-2 col-form-label">name</label>
-					<input 
-						id={`map-${index}-name`}
-						value={name}
-						onChange={onChange}
-						type="text" 
-						className="form-control col-sm-10"
-						name="name" 
-						aria-describedby="runParamsHelp" 
-						placeholder="Enter an name for the map" 
-					/>
-					</div>
-					<div className="form-group row">
-					<label htmlFor={`map-${index}-destination`} className="col-sm-2 col-form-label">destination</label>
-					<input 
-						id={`map-${index}-destination`}
-						value={destination}
-						onChange={onChange}
-						type="text" 
-						className="form-control col-sm-10"
-						name="destination" 
-						aria-describedby="runParamsHelp" 
-						placeholder="Enter a destination for the map" 
-					/>
-					</div>
-					<div className="form-group row">
-					<label htmlFor={`map-${index}-description`} className="col-sm-2 col-form-label">Description</label>
-					<textarea 
-						id={`map-${index}-description`}
-						value={description}
-						onChange={onChange}
-						className="form-control col-sm-10"
-						name="description" 
-						aria-describedby="runParamsHelp" 
-						placeholder="Enter a description for the map" 
-					/>
-					</div>
-					<div className="form-group row">
-					
-					<label htmlFor={`map-${index}-fileEntry`} className="col-sm-2 col-form-label">fileEntry</label>
-					<input 
-						id={`map-${index}-fileEntry`}
-						value={fileEntry}
-						onChange={onChange}
-						type="text" 
-						className="form-control col-sm-10"
-						name="fileEntry" 
-						aria-describedby="runParamsHelp" 
-						placeholder="Enter a fileEntry for the map" 
-					/>
-					</div>
-					<div className="form-group row">
-					<label htmlFor={`map-${index}-source`} className="col-sm-2 col-form-label">source</label>
-					<input 
-						id={`map-${index}-source`}
-						value={source}
-						onChange={onChange}
-						type="text" 
-						className="form-control col-sm-10"
-						name="source" 
-						aria-describedby="runParamsHelp" 
-						placeholder="Enter a source for the map" 
-					/>
-					</div>
-					<div className="form-group row">
-					<label htmlFor={`map-${index}-sourceFormat`} className="col-sm-2 col-form-label">sourceFormat</label>
-					<select
-						id={`map-${index}-sourceFormat`}
-						value={sourceFormat}
-						onChange={onChange}
-						className="form-control col-sm-10"
-						name="sourceFormat" 
-						aria-describedby="runParamsHelp" 
-						placeholder="Enter a sourceFormat for the map"
-					>
-						<option value="sc2map">SC2Map</option>
-						<option value="zip">Zip</option>
-					</select>
-					</div>
-				</fieldset>
-			</div>
-			<div className="card-footer">
-				<div className="btn-group" role="group" aria-label="Basic example">
-					<button type="button" className="btn btn-primary">Up</button>
-					<button type="button" className="btn btn-primary">Down</button>
-					<button type="button" className="btn btn-danger">Delete</button>
-				</div>
-			</div>
-		</div>
-	);
-}
 
 interface IManifestEditorProps{
-	"campaign":ICampaign,
-	"setCampaign":any
+	"campaign"?:ICampaign,
+	"index"?:number,
+	"setCampaign"?:typeof setCampaignLocal
 }
 
 function ManifestEditor (props:IManifestEditorProps) {
-	const {campaign,setCampaign} = props;
+	const {campaign,index, setCampaign} = props;
 	const {maps} = campaign;
 	const onChange = (e:ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLTextAreaElement>|ChangeEvent<HTMLSelectElement>)=>{
 		console.log(e);
@@ -143,18 +25,18 @@ function ManifestEditor (props:IManifestEditorProps) {
 		//const property:string = e.currentTarget.name;
 		//newCampaign[property] = e.currentTarget.value;
 		console.log(newCampaign)
-		setCampaign(newCampaign);
+		setCampaign(newCampaign, index);
 	};
 	const addMap = ()=>{
 		const newCampaign = {
 			...campaign,
 			maps:[...campaign.maps, Campaign.emptyMap()]
 		}
-		setCampaign(newCampaign);
+		setCampaign(newCampaign,index);
 	}
-	const setCampaignMap = (map:IMap)=>{
+	const setCampaignMap = (map:IMap,index:number)=>{
 		const maps = [...campaign.maps];
-		const index = maps.findIndex(v => v.destination === map.destination);
+		//const index = maps.findIndex(v => v.destination === map.destination);
 		console.log("setCampaignMap", campaign);
 		console.log("setCampaignMap", maps);
 		maps[index] = map;
@@ -162,7 +44,7 @@ function ManifestEditor (props:IManifestEditorProps) {
 			...campaign,
 			maps
 		};
-		setCampaign(newCampaign);
+		setCampaign(newCampaign,index);
 	}
 	console.log("ManifestEditor props", props)
 	return (
@@ -239,9 +121,9 @@ function ManifestEditor (props:IManifestEditorProps) {
 				{maps.map((map,index)=>{
 					return (
 						
-						<MapItem 
+						<ManifestEditorMapItem 
 							key={map.destination} 
-							index={index.toString()} 
+							index={index} 
 							map={map} 
 							setCampaignMap={setCampaignMap}
 						/>);
@@ -260,4 +142,28 @@ function ManifestEditor (props:IManifestEditorProps) {
 }
 	
 	
-export default ManifestEditor;
+const mapStateToProps:MapStateToProps<IManifestEditorProps,IManifestEditorProps,AppState> = (state,ownProps) => {
+	const {campaignState} = state;
+	const {selectedIndexLocal, campaignsLocal} = campaignState
+	const props = {
+		"campaign":campaignsLocal[selectedIndexLocal],
+		"index": selectedIndexLocal
+	}
+	return {...ownProps, ...props};
+};
+
+const mapDispatchToProps:MapDispatchToProps<IManifestEditorProps,IManifestEditorProps> = (dispatch,ownProps) => {
+	return {
+		...ownProps,
+		setCampaign: (campaign, index) => {
+			return dispatch(setCampaignLocal(campaign,index));
+		}
+	};
+};
+
+
+
+export default connect(
+	mapStateToProps,//mapStateToProps,
+	mapDispatchToProps
+  )(ManifestEditor);

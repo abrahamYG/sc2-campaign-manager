@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FC } from 'react';
 import Config, {IConfig} from '../classes/Config'
 import SettingsForm from '../components/SettingsForm'
 import { connect } from "react-redux";
@@ -6,7 +6,7 @@ import { AppState } from '../redux/store';
 import {setConfig} from '../redux/actions'
 
 
-export const SettingsPane = (props:any) =>{
+export const SettingsPane: FC = (props:any) =>{
 	const [installDir, setInstallDir] = useState(Config.getInstallDir());
 	const [runCommand, setRunCommand] = useState(Config.getRunCommand());
 	const [runParams, setRunParams] = useState(Config.getRunParams().join(" "));

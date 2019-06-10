@@ -1,4 +1,4 @@
-import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL } from "../types/actions";
+import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL, SELECT_CAMPAIGN_LOCAL, SET_CAMPAIGN_LOCAL } from "../types/actions/campaign";
 import {ICampaignState} from '../types'
 import _ from 'lodash';
 
@@ -9,8 +9,10 @@ const campaignState:ICampaignState = {
 	campaignsLocal:[],
 	campaignsById:{},
 	campaignIds:[],
-	selectedCampaign: null,
-	selectedId: ""
+	selectedId: "",
+	selectedIdLocal:"",
+	selectedIndex:-1,
+	selectedIndexLocal:-1
 };
 
 export default function(state = campaignState, action:CampaignActionTypes) {
@@ -33,6 +35,7 @@ export default function(state = campaignState, action:CampaignActionTypes) {
 				campaignsLocal
 			};
 		}
+		
 		case ADD_CAMPAIGN: {
 			const campaign = action.payload;
 			const {id} = campaign;
@@ -46,7 +49,23 @@ export default function(state = campaignState, action:CampaignActionTypes) {
 		case SELECT_CAMPAIGN: {
 			const selectedCampaign = action.payload;
 			const selectedId = selectedCampaign.id;
-			return {...state, selectedCampaign, selectedId};
+			const selectedIndex = action.index;
+			return {...state, selectedCampaign, selectedId,selectedIndex};
+		}
+		case SELECT_CAMPAIGN_LOCAL: {
+			const selectedIndexLocal = action.index
+			return {...state, selectedIndexLocal};
+		}
+		case SET_CAMPAIGN_LOCAL: {
+			const {payload:campaign, index} = action;
+			const {campaignsLocal} = state;
+			return {
+				...state,
+				campaignsLocal:Object.assign(
+					[...campaignsLocal], 
+					{[index]:campaign}
+				)
+			}
 		}
 		default:
 		return state;

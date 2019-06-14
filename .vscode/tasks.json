@@ -15,12 +15,17 @@
 		{
 			"type": "npm",
 			"script": "electron",
-			"problemMatcher": []
+			"problemMatcher": [],
+			"group": "test"
 		},
 		{
 			"type": "npm",
 			"script": "dev",
-			"problemMatcher": []
+			"problemMatcher": [],
+			"group": {
+				"kind": "test",
+				"isDefault": true
+			}
 		}
 	]
 }

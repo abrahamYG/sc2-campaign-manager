@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect, MapDispatchToProps } from "react-redux";
 import DownloadBar from './DownloadBar'
-import {selectCampaign} from '../redux/actions'
 import { ICampaign } from '../classes/Campaign';
+import { selectCampaign } from '../store/campaign/actions';
 
 interface ICampaignListItemProps {
 	campaign:ICampaign, 

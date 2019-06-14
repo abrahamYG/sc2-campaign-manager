@@ -1,4 +1,4 @@
-import {GET_CONFIG, SET_CONFIG, ConfigActionTypes} from "../types/actions/config";
+import {GET_CONFIG, SET_CONFIG, ConfigActionTypes} from "./types";
 
 import {IConfig} from "../../classes/Config"
 

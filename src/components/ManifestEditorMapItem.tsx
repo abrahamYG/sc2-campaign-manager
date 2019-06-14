@@ -1,10 +1,10 @@
-import { IMap } from "../classes/Campaign";
+import { ISC2Map } from "../classes/Campaign";
 import React, { ChangeEvent, FC } from "react";
 
 interface IManifestEditorMapItemProps{
 	"index":number,
-	"map": IMap,
-	"setCampaignMap":(map:IMap,index:number)=>void
+	"map": ISC2Map,
+	"setCampaignMap":(map:ISC2Map,index:number)=>void
 }
 
 const ManifestEditorMapItem:FC<IManifestEditorMapItemProps> = (props) => {

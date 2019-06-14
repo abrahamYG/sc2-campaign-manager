@@ -1,7 +1,11 @@
-import {IConfig} from '../../../classes/Config'
+import { IConfig } from '../../classes/Config';
 
 export const GET_CONFIG = "GET_CONFIG";
 export const SET_CONFIG = "SET_CONFIG";
+
+export interface IConfigState {
+	config:IConfig
+}
 
 interface SetConfigAction {
 	type: typeof SET_CONFIG

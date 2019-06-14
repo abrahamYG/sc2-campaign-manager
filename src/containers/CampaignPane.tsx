@@ -5,10 +5,9 @@ import CampaignList from '../components/CampaignList';
 import CampaignDetails from '../components/CampaignDetails';
 import Campaign, {ICampaign} from '../classes/Campaign'
 import msg from '../constants/ipcmessages';
-import  {ICampaignState} from '../redux/types';
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
-import {setCampaigns} from '../redux/actions'
-import {AppState} from "../redux/store";
+import { AppState } from '../store';
+import { setCampaigns } from '../store/campaign/actions';
 interface ICampaignPaneProps {
 	"campaigns":Array<ICampaign>,
 	"selectedCampaign":ICampaign,
@@ -35,11 +34,7 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 			"selectedCampaign": null, 
 			"selectedCampaignAuthor": null
 		};
-		Campaign.getCampaignsRemote().then((campaigns) =>{
-			props.setCampaigns(campaigns.map(
-				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
-			));
-		})
+		
 	}
 	handleCampaignItemClick = (campaign:ICampaign) => {
 		localStorage.setItem('selectedCampaign',campaign.id)

@@ -1,8 +1,8 @@
 import React from 'react';
 import Config, {IConfig} from '../classes/Config'
 import { connect } from "react-redux";
-import { AppState } from '../redux/store';
-import {setConfig} from '../redux/actions'
+import { AppState } from '../store';
+import { setConfig } from '../store/config/actions';
 
 const SettingsForm = (props:any) => {
 	const {

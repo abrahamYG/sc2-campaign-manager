@@ -1,6 +1,6 @@
 import { createStore,compose, applyMiddleware } from "redux";
-import rootReducer from "./reducers";
-import { crashReporter, logger } from "./middleware";
+import rootReducer from "./store";
+import { middleware } from "./store/middleware";
 
 
 declare global {
@@ -10,9 +10,8 @@ declare global {
 }
 
 const enhancers = compose(
-	applyMiddleware(crashReporter,logger),
+	applyMiddleware(...middleware),
 	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 const store = createStore(rootReducer,enhancers);
-export type AppState = ReturnType<typeof rootReducer>
 export default store;

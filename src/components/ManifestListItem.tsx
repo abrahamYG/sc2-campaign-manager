@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ICampaign } from '../classes/Campaign';
 import { connect, MapDispatchToProps } from 'react-redux';
-import { selectCampaignLocal } from '../redux/actions/campaign'
+import { selectCampaignLocal } from '../store/campaign/actions'
 
 interface IManifestListItemProps {
 	campaign: ICampaign,

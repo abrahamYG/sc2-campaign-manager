@@ -6,8 +6,8 @@ import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
 //import Lightbox as Lightbox2 from 'react-lightbox-component';
 import DownloadBar from './DownloadBar'
 import Lightbox from 'react-images'
-import { AppState } from '../redux/store';
 import { MapStateToProps, MapDispatchToProps, connect } from 'react-redux';
+import { AppState } from '../store';
 
 
 const emptyAuthor:IAuthor = {
@@ -146,7 +146,7 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 				} />
 				<Route path="/campaign/maps" render={()=>
 					<dl>
-					{maps.map((map:any) =>
+					{maps.map((map) =>
 						<React.Fragment key={map.destination}>
 							<dt>{map.name} <button className="btn btn-secondary">Launch</button></dt>
 							<dd>{map.description}</dd>
@@ -168,7 +168,7 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 	
 const mapStateToProps:MapStateToProps<ICampaignDetailsProps,ICampaignDetailsProps,AppState> = (state,ownProps) => {
 	const {campaignState} = state;
-	const {selectedIndex, campaigns} = campaignState
+	const {selectedIndex, campaigns} = campaignState;
 	const props = {
 		"campaign":campaigns[selectedIndex],
 		"index": selectedIndex

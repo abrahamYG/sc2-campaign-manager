@@ -2,9 +2,8 @@
 import React from 'react';
 import { ICampaign } from '../classes/Campaign';
 import CampaignListItem from './CampaignListItem'
-import {ICampaignState} from '../redux/types'
-import { connect } from "react-redux";
-import { AppState } from '../redux/store';
+import { connect, MapStateToProps } from "react-redux";
+import { AppState } from '../store';
 interface ICampaignListProps{
 	"campaigns"?:Array<ICampaign>, 
 	"selectedIndex"?:number,
@@ -33,7 +32,7 @@ const CampaignList = (props:ICampaignListProps) => {
 }
 
 
-const mapStateToProps = (state:AppState,ownProps:ICampaignListProps):ICampaignListProps => {
+const mapStateToProps:MapStateToProps<ICampaignListProps,ICampaignListProps,AppState> = (state,ownProps) => {
 	const {campaignState} = state;
 	return {...ownProps, ...campaignState};
 };

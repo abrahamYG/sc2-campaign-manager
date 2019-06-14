@@ -1,10 +1,10 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, FC } from 'react';
 import Form from 'react-jsonschema-form';
-import Campaign, { ICampaign, IMap } from '../classes/Campaign';
+import Campaign, { ICampaign, ISC2Map } from '../classes/Campaign';
 import { MapStateToProps, MapDispatchToProps, connect } from 'react-redux';
-import { AppState } from '../redux/store';
-import { setCampaignLocal } from '../redux/actions/campaign';
+import { setCampaignLocal } from '../store/campaign/actions';
 import ManifestEditorMapItem from './ManifestEditorMapItem';
+import { AppState } from '../store';
 
 
 interface IManifestEditorProps{
@@ -13,9 +13,10 @@ interface IManifestEditorProps{
 	"setCampaign"?:typeof setCampaignLocal
 }
 
-function ManifestEditor (props:IManifestEditorProps) {
+const ManifestEditor:FC<IManifestEditorProps> = (props) => {
 	const {campaign,index, setCampaign} = props;
 	const {maps} = campaign;
+	const saveCampaign = () => Campaign.writeToDisk(campaign);
 	const onChange = (e:ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLTextAreaElement>|ChangeEvent<HTMLSelectElement>)=>{
 		console.log(e);
 		const newCampaign = {
@@ -34,7 +35,10 @@ function ManifestEditor (props:IManifestEditorProps) {
 		}
 		setCampaign(newCampaign,index);
 	}
-	const setCampaignMap = (map:IMap,index:number)=>{
+	const loadFromZip = () =>{
+
+	}
+	const setCampaignMap = (map:ISC2Map,index:number)=>{
 		const maps = [...campaign.maps];
 		//const index = maps.findIndex(v => v.destination === map.destination);
 		console.log("setCampaignMap", campaign);
@@ -50,6 +54,16 @@ function ManifestEditor (props:IManifestEditorProps) {
 	return (
 		<form className="mr-3">
 			<h1>Manifest Editor</h1>
+				<div className="btn-group mb-2" role="group" aria-label="">
+					<button 
+						type="button"
+						className="btn btn-primary"
+						onClick={saveCampaign}
+					>
+						Save Campaign to Disk
+					</button>
+					
+				</div>
 			<fieldset className="form-group">
 				<div className="form-group row">
 					<label htmlFor="campaign-id" className="col-sm-2 col-form-label">ID</label>
@@ -118,6 +132,13 @@ function ManifestEditor (props:IManifestEditorProps) {
 				/>
 				</div>
 				<h2>Maps</h2>
+				<button 
+					type="button"
+					className="btn btn-primary"
+					onClick={loadFromZip}
+				>
+					Import Maps
+				</button>
 				{maps.map((map,index)=>{
 					return (
 						

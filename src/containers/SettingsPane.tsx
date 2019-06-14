@@ -2,8 +2,8 @@ import React, { useState, FC } from 'react';
 import Config, {IConfig} from '../classes/Config'
 import SettingsForm from '../components/SettingsForm'
 import { connect } from "react-redux";
-import { AppState } from '../redux/store';
-import {setConfig} from '../redux/actions'
+import { AppState } from '../store';
+import { setConfig } from '../store/config/actions';
 
 
 export const SettingsPane: FC = (props:any) =>{

@@ -6,6 +6,8 @@ import NavBar from '../components/NavBar';
 import CampaignPane from '../containers/CampaignPane';
 import MapMakerPane from '../containers/MapMakerPane'
 import SettingsPane from '../containers/SettingsPane'
+import { setCampaigns, setCampaignsLocal, setCampaignsRemote } from '../store/campaign/actions';
+import { MapDispatchToProps, connect } from 'react-redux';
 
 interface IHomeState {
 	"campaigns": Array<ICampaign>,
@@ -15,10 +17,14 @@ interface IHomeState {
 	"selectedPane": string
 }
 
-
+interface IHomeProps {
+	setCampaigns?: typeof setCampaigns
+	setCampaignsLocal?: typeof setCampaignsLocal
+	setCampaignsRemote?: typeof setCampaignsRemote
+}
 
 class Home extends Component<any, IHomeState> {
-	constructor(props: Object) {
+	constructor(props: IHomeProps) {
 		super(props);
 		const selectedPaneLocal = (localStorage.getItem('selectedPane') !== null) ? localStorage.getItem('selectedPane') : "campaigns";
 		const selectedCampaignLocal = (localStorage.getItem('selectedCampaign') !== null) ? localStorage.getItem('selectedCampaign') : null;
@@ -29,6 +35,19 @@ class Home extends Component<any, IHomeState> {
 			"selectedCampaignAuthor": null,
 			"selectedPane": selectedPaneLocal
 		};
+		Campaign.getCampaignsRemote().then((campaigns) =>{
+			props.setCampaignsRemote(campaigns.map(
+				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
+			));
+		})
+		Campaign.getCampaignsLocal().then((campaigns) =>{
+			props.setCampaignsLocal(campaigns.map(
+				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
+			));
+		})
+		//props.setCampaignsRemote();
+		//props.setCampaignsLocal();
+		//setCampaignsLocal
 
 		//Campaign.getCampaignsLocal().then((campaigns: any) =>this.setState({campaigns}))
 		//Campaign.getCampaignsRemote().then((campaigns: any) =>this.setState({campaigns}))
@@ -73,4 +92,22 @@ class Home extends Component<any, IHomeState> {
 	}
 }
 
-export default Home;
+const mapDispatchToProps:MapDispatchToProps<IHomeProps,IHomeProps> = (dispatch,ownProps) =>{
+	return {
+		...ownProps,
+		setCampaigns: (campaigns) => {
+			return dispatch(setCampaigns(campaigns));
+		},
+		setCampaignsLocal: (campaigns) => {
+			return dispatch(setCampaignsLocal(campaigns));
+		},
+		setCampaignsRemote: (campaigns) => {
+			return dispatch(setCampaignsRemote(campaigns));
+		}
+	};
+}
+
+export default connect(
+	null,//mapStateToProps,
+	mapDispatchToProps
+  )(Home);

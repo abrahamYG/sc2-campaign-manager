@@ -3,9 +3,9 @@ import ManifestList from '../components/ManifestList';
 import ManifestEditor from '../components/ManifestEditor';
 
 import Campaign, {ICampaign} from '../classes/Campaign'
-import { setCampaignsLocal, selectCampaignLocal } from '../redux/actions/campaign';
+import { setCampaignsLocal, selectCampaignLocal } from '../store/campaign/actions';
 import { MapDispatchToProps, connect, MapStateToProps } from 'react-redux';
-import { AppState } from '../redux/store';
+import { AppState } from '../store';
 
 
 interface IMapMakerPaneProps{
@@ -27,9 +27,7 @@ interface IMapMakerPaneState{
 class MapMakerPane extends Component<IMapMakerPaneProps, IMapMakerPaneState> {
 	constructor(props:IMapMakerPaneProps){
 		super(props);
-		Campaign.getCampaignsLocal().then((campaigns) =>{
-			props.setCampaignsLocal(campaigns)
-		})
+		
 	}
 	render(){
 		const {selectedIndex, campaigns} = this.props;

@@ -1,5 +1,4 @@
-import { ConfigActionTypes,SET_CONFIG,GET_CONFIG } from "../types/actions/config";
-import {IConfigState} from '../types'
+import { ConfigActionTypes,SET_CONFIG,GET_CONFIG, IConfigState } from "./types";
 import _ from 'lodash';
 
 

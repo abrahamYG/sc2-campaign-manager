@@ -5,31 +5,42 @@ import {promisify} from 'util';
 //const path = require('electron').remote.require('path');
 //const fs = require('electron').remote.require('fs');
 //const { promisify } = require('electron').remote.require('util')
-const {app,dialog} = require('electron').remote.require('electron');
+import yauzl from 'yauzl';
+import {remote} from 'electron'
+
+const {app,dialog} = remote.require('electron');
+import download from 'download'
 
 const readFileAsync = promisify(fs.readFile)
 const writeFileAsync = promisify(fs.writeFile)
+const fsPromises = fs.promises;
 
 import Config from './Config';
 import msg from '../constants/ipcmessages';
-
+import Downloader from './Downloader';
+/**
+ * Interface type for Campaign Objects
+ */
 export interface ICampaign {
+	/**Campaign Id*/
 	"id":string,
 	"name":string,
 	"author":string,
+	"thumbnail":string,
 	"description":string,
 	"progress":number,
 	"installed":boolean,
 	"entryPoint":string,
-	"maps":Array<IMap>,
-	"mods":Array<IMod>,
+	/**Maps used by the campaign */
+	"maps":Array<ISC2Map>,
+	"mods":Array<ISC2Mod>,
 	"lastUpdated":string,
 	"patchNotes":Array<object>,
 	"screenshots":Array<string>,
-	[key: string]: string|number|object|boolean|IMap|IMod
+	[key: string]: string|number|object|boolean|ISC2Map|ISC2Mod
 };
 
-interface ISC2Component{
+export interface ISC2Component{
 	"name": string,
 	"description": string,
 	"destination": string,
@@ -37,9 +48,12 @@ interface ISC2Component{
 	"sourceFormat": string,
 	"fileEntry": string
 }
-export interface IMap extends ISC2Component {};
+/**
+ * Defines a Map within a campaign
+ */
+export interface ISC2Map extends ISC2Component {};
 
-export interface IMod  extends ISC2Component{};
+export interface ISC2Mod  extends ISC2Component{};
 
 export interface IAuthor {
 	"id":string,
@@ -49,18 +63,25 @@ export interface IAuthor {
 
 }
 export default class Campaign {
-	static getCampaignLocal = async (source:string) => {
+	static getCampaignLocal = async (source:string):Promise<ICampaign> => {
 		console.group("getCampaignLocal")
-		const fullPath = path.join(app.getPath("userData"),"manifests/", source)
+		const fullPath = source;// path.join(app.getPath("userData"),"manifests/", source)
 		
 		console.log(fullPath); 
 		const response:Buffer = await readFileAsync(fullPath);
 		const json = response.toString();
 		console.log(json);
-		const campaign:Object = JSON.parse(json);
+		const campaign:ICampaign = JSON.parse(json);
 		console.log(campaign);
 		console.groupEnd();
 		return campaign;
+	}
+	
+	static writeToDisk(campaign:ICampaign):boolean{
+		const campaignJSON = JSON.stringify(campaign,null,4);
+		const campaignFile = path.join(Config.getLocalSourcesPath(),campaign.id+".json");
+		fs.writeFileSync(campaignFile, campaignJSON);
+		return true;
 	}
 	static getCampaignRemote = async (source:string) => {
 		const response:Response = await fetch(source);
@@ -87,52 +108,46 @@ export default class Campaign {
 		return params;
 	}
 	
-	static getCampaignsRemote = async () => {
+	static getCampaignsRemote = async (): Promise<Array<ICampaign>> => {
 		const campaigns:Array<ICampaign> = await Promise.all(Config.getSources().map((source:string) => Campaign.getCampaignRemote(source)));
 		return campaigns;
 	}
-	static getCampaignsLocal = async () => {
-		console.group("getCampaignsLocal");
-		const campaigns:object = await Promise.all(Config.getLocalSources().map((source:string) => {
+	static getCampaignsLocal = async ():Promise<Array<ICampaign>> => {
+		const campaigns = await Promise.all(Config.getLocalSources().map((source:string) => {
 			return Campaign.getCampaignLocal(source) 
 		}));
-		console.groupEnd();
 		return campaigns;
 	}
 	static getCampaignsInstallDir = ():string => {
 		return Config.getInstallDir();
 	}
 	static getCampaignsInstalled = (campaigns:Array<ICampaign>) => {
-		const installedCampaigns:Array<ICampaign> = []
-		campaigns.map(campaign => {
-			const installedCampaign = {...campaign }
-			installedCampaigns.push(installedCampaign)
-			installedCampaign.installed = Campaign.isCampaignInstalled(installedCampaign);
+		return campaigns.map(campaign => {
+			return {...campaign, installed: Campaign.isCampaignInstalled(campaign) }
 		})
-		return installedCampaigns;
 	}
 	static isCampaignInstalled = (campaign:ICampaign) => {
-		console.group("isCampaignInstalled")
-		console.log("campaign",campaign);
-
-		let installed = true;
 		const installDir = Campaign.getCampaignsInstallDir();
 		const mapsExist = campaign.maps.reduce((existtotal, map) => {
 			return existtotal && fs.existsSync(path.join(installDir,map.destination))
 		},true);
-		console.log("mapsExist",mapsExist);
 		const modsExist = campaign.mods.reduce((existtotal, mod) => {
 			return existtotal && fs.existsSync(path.join(installDir,mod.destination))
 		},true);
-		console.log("modsExist",modsExist);
-		installed = mapsExist && modsExist;
-		console.groupEnd()
-		return installed;
+		return mapsExist && modsExist;
 	}
 
 	static downloadCampaign = (campaign:ICampaign) => {
-		console.log("downloadCampaign")
-		ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
+		const installDir = Campaign.getCampaignsInstallDir();
+		Downloader.pushCampaign(campaign);
+		//ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
+		const downloads = [...new Set(campaign.maps.map(
+			({source,sourceFormat}) => {return {source, sourceFormat}}
+		))].map(
+			(src) =>  download(src.source,Config.getInstallDir()).then(
+				(data) => data
+			)
+		)
 	}
 	static playCampaign = (campaign:ICampaign) => {
 		console.group("playCampaign")
@@ -146,7 +161,7 @@ export default class Campaign {
 		ipcRenderer.send(msg.PLAY_CAMPAIGN, data);
 		console.groupEnd();
 	}
-	static emptyMap = ():IMap => {
+	static emptyMap = ():ISC2Map => {
 		return {
 			"name": "",
 			"description": "",
@@ -160,6 +175,7 @@ export default class Campaign {
 		return {
 			"id":"",
 			"name":"",
+			"thumbnail":"",
 			"progress":0,
 			"author":"",
 			"description":"",

@@ -1,9 +1,10 @@
 const os = require('electron').remote.require('os');
-const path = require('electron').remote.require('path');
+//const path = require('electron').remote.require('path');
 const {app,dialog} = require('electron').remote.require('electron');
 const {Registry} = require('electron').remote.require('rage-edit')
 const {currentPlatform, platforms} = require("./Platform")
 //const fs = require('fs');
+import path from 'path'
 import fs from 'fs'	
 
 const manifestSource = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign-manager/master/public/sources.json";
@@ -72,9 +73,16 @@ export default class Config {
 	static getSources():Array<string> {
 		return  Config.configFileExists()&&Config.loadFromDisk().campaignSources? (Config.loadFromDisk().campaignSources):[""];
 	}
-	static getLocalSources():Array<string> {
+	
+	static getLocalSourcesPath():string {
 		const basePath = path.join(app.getPath("userData"), "manifests/");
-		const localSources:Array<string> = (fs.existsSync(basePath))?fs.readdirSync(basePath).map(source => path.join(basePath,source)):[];
+		return  basePath;//Config.configFileExists()&&Config.loadFromDisk().campaignLocalSources? (Config.loadFromDisk().campaignLocalSources):[""];
+	}
+	static getLocalSources():Array<string> {
+		const basePath = Config.getLocalSourcesPath();
+		const localSources:Array<string> = (fs.existsSync(basePath))?fs.readdirSync(basePath).
+			filter(file => path.extname(file) === ".json").
+			map(source => path.join(basePath,source)):[];
 
 		console.log("getLocalSources",localSources);
 		return  localSources;//Config.configFileExists()&&Config.loadFromDisk().campaignLocalSources? (Config.loadFromDisk().campaignLocalSources):[""];

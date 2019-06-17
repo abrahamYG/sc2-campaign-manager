@@ -195,7 +195,7 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 				const destBaseDir = installDir;
 				const destBasename = sources[source].files.destination;
 				console.log("destBaseDir:", destBaseDir)
-				console.log("zipBaseName:", zipBaseName)
+				console.log("destBasename:", destBasename)
 				const destPath = path.join(destBaseDir, destBasename);
 				console.log("nozip: ", destPath);
 				fs.ensureDirSync(path.dirname(destPath));

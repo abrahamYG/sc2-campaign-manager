@@ -78,15 +78,26 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 						<Redirect to="/description"/>
 			)}/>
 			<header className="campaign-content-header mb-2">
-				<div className="campaign-content-controls btn-group float-right" role="group">
-					{(isCampaignInstalled) &&
+				<div className="campaign-content-controls float-right" role="group">
+					{(isCampaignInstalled) && (maps.length > 0) &&
 						<React.Fragment>
 							<button onClick={() => onPlayCampaignClick(campaign)} className="btn btn-primary">Play</button>
 							{/* <button onClick={() => onUpdateCampaignClick(campaign)} className="btn btn-outline-primary">Update</button> */}
 						</React.Fragment>
 					}
-					{(!isCampaignInstalled) &&
+					{(!isCampaignInstalled) && (maps.length > 0) &&
 						<button onClick={(e) => onDownloadClick(campaign)} className="btn btn-primary">Download</button>	
+					}
+					{(maps.length === 0) &&
+						<>
+						<button 
+						disabled
+						className="btn btn-primary disabled float-right"
+						>
+							Download
+						</button>
+						<p><small className="text-warning">This campaign has no maps listed.</small></p>
+						</>
 					}
 					
 				</div>

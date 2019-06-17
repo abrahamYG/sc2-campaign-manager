@@ -45,10 +45,7 @@ export default class Config {
 			const configFile = this.getConfigFilePath();
 			console.log("configFile",configFile)
 			const data:Buffer = fs.readFileSync(configFile);
-			console.log("data",data)
-			console.log("data.toString()",data.toString())
 			configs = JSON.parse(data.toString());
-			console.log("configs",configs)
 			console.groupEnd();
 		}
 		return configs;
@@ -83,8 +80,6 @@ export default class Config {
 		const localSources:Array<string> = (fs.existsSync(basePath))?fs.readdirSync(basePath).
 			filter(file => path.extname(file) === ".json").
 			map(source => path.join(basePath,source)):[];
-
-		console.log("getLocalSources",localSources);
 		return  localSources;//Config.configFileExists()&&Config.loadFromDisk().campaignLocalSources? (Config.loadFromDisk().campaignLocalSources):[""];
 	}
 	static getInstallDir():string {

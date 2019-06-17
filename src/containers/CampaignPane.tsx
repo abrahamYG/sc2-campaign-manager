@@ -7,11 +7,12 @@ import Campaign, {ICampaign} from '../classes/Campaign'
 import msg from '../constants/ipcmessages';
 import { connect, MapDispatchToProps, MapStateToProps } from "react-redux";
 import { AppState } from '../store';
-import { setCampaigns } from '../store/campaign/actions';
+import { setCampaigns, setCampaign } from '../store/campaign/actions';
 interface ICampaignPaneProps {
 	"campaigns":Array<ICampaign>,
 	"selectedCampaign":ICampaign,
 	"setCampaigns"?:typeof setCampaigns,
+	setCampaign:typeof setCampaign,
 	"selectedCampaignAuthor":object
 	"onDownloadCampaignClick": (campaign:ICampaign) =>void
 
@@ -67,15 +68,17 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_STATUS, (event:any, arg:any) => {
 			const campaigns = [...this.props.campaigns];
 			const index = campaigns.findIndex(c => c.id === arg.campaignId)
-			const campaign = campaigns[index];
-			campaign.progress = arg.progress.toFixed(2);
-			console.log("DOWNLOAD_CAMPAIGN_STATUS", campaign)
+			const campaign = {
+				...campaigns[index],
+				progress: arg.progress.toFixed(2)
+			};
 			campaigns[index] = campaign;
-			this.props.setCampaigns(campaigns)
-			this.setState({campaigns})
+			this.props.setCampaign(campaign,index)
+			console.log("DOWNLOAD_CAMPAIGN_STATUS",campaign.progress)
+			//this.setState({campaigns})
 		});
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_FINISH, (event:any, arg:any) => {
-			const campaigns = [...this.state.campaigns];
+			const campaigns = [...this.props.campaigns];
 			const index = campaigns.findIndex(c => c.id === arg.campaignId)
 			const campaign = campaigns[index];
 			campaign.installed = Campaign.isCampaignInstalled(campaign);
@@ -87,7 +90,7 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 	}
 	render(){
 		const {selectedCampaign,campaigns} = this.props
-		console.log(this.state)
+		console.log(this.props)
 		return (
 			<div className="row">
 				<section className="sidebar col-3 bg-secondary pr-0 pl-0">
@@ -95,7 +98,7 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 					<CampaignList />
 				}
 				</section>
-				<section className="campaign-details-pane col bg-light">
+				<section className="campaign-details-pane col bg-white">
 					{(selectedCampaign) &&
 					<CampaignDetails 
 						onDownloadCampaignClick={this.handleDownloadClick}
@@ -130,6 +133,9 @@ const mapDispatchToProps:MapDispatchToProps<ICampaignPaneProps,ICampaignPaneProp
 		...ownProps,
 		setCampaigns: (campaigns) => {
 			return dispatch(setCampaigns(campaigns));
+		},
+		setCampaign: (campaign,index) => {
+			return dispatch(setCampaign(campaign,index));
 		}
 	};
 };

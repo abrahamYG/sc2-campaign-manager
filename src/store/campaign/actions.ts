@@ -1,4 +1,12 @@
-import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_FILTER, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL, SELECT_CAMPAIGN_LOCAL, SET_CAMPAIGN_LOCAL, AddCampaignAction, SelectCampaignAction, SelectCampaignLocalAction, SetCampaignsAction, SetCampaignsLocalAction, SetCampaignLocalAction, SetCampaignsRemoteAction, SET_CAMPAIGNS_REMOTE } from "./types";
+import { CampaignActionTypes, 
+	ADD_CAMPAIGN, 
+	SELECT_CAMPAIGN, 
+	SET_FILTER, 
+	SET_CAMPAIGNS, 
+	SET_CAMPAIGNS_LOCAL, 
+	SELECT_CAMPAIGN_LOCAL, 
+	SET_CAMPAIGN,
+	SET_CAMPAIGN_LOCAL, AddCampaignAction, SelectCampaignAction, SelectCampaignLocalAction, SetCampaignsAction, SetCampaignsLocalAction, SetCampaignLocalAction, SetCampaignsRemoteAction, SET_CAMPAIGNS_REMOTE, SetCampaignAction } from "./types";
 import { ICampaign } from "../../classes/Campaign";
 import { ActionCreator, bindActionCreators,Dispatch, Action } from "redux";
 
@@ -37,6 +45,11 @@ export const setCampaignsLocal = (campaigns:Array<ICampaign>):SetCampaignsLocalA
 	payload: campaigns
 });
 
+
+export const setCampaign = (campaign:ICampaign, index:number):SetCampaignAction => ({
+	type: SET_CAMPAIGN,
+	payload: {campaign,index}
+});
 
 export const setCampaignLocal = (campaign:ICampaign, index:number):SetCampaignLocalAction => ({
 	type: SET_CAMPAIGN_LOCAL,

@@ -12,7 +12,6 @@ interface ICampaignListItemProps {
 }
 
 const CampaignListItem = (props:ICampaignListItemProps) => {
-	console.log("CampaignListItem",props)
 	const {campaign, index, selectedIndex, onClick} = props;
 	const {id, thumbnail, author, shortName, summmary, progress} = campaign;
 	const downloadProgress = (progress)?progress:0;

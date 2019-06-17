@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { HashRouter as Router, Route, NavLink, Redirect, Switch} from "react-router-dom";
 import  ReactMarkdown from 'react-markdown'
 
-import Campaign, {ICampaign, IAuthor} from '../classes/Campaign'
+import Campaign, {ICampaign, IAuthor, IPatchNote} from '../classes/Campaign'
 //import Lightbox as Lightbox2 from 'react-lightbox-component';
 import DownloadBar from './DownloadBar'
 import Lightbox from 'react-images'
@@ -18,7 +18,7 @@ const emptyAuthor:IAuthor = {
 };
 
 function PatchNotes(props:any){
-	const patchNotes:Array<any> = props.patchNotes;
+	const patchNotes:Array<IPatchNote> = props.patchNotes;
 	console.log("PatchNotes",patchNotes)
 	return (
 	<React.Fragment>
@@ -34,6 +34,7 @@ function PatchNotes(props:any){
 
 interface ICampaignDetailsProps {
 	"campaign"?:ICampaign, 
+	"path"?:string,
 	"selectedCampaignAuthor"?:IAuthor, 
 	"onPlayCampaignClick":(campaign:ICampaign)=>void, 
 	"onUpdateCampaignClick"?:(campaign:ICampaign)=>void, 
@@ -45,7 +46,8 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 		selectedCampaignAuthor, 
 		onPlayCampaignClick, 
 		onUpdateCampaignClick, 
-		onDownloadCampaignClick
+		onDownloadCampaignClick,
+		path
 	} = props
 	const campaign = (props.campaign)?props.campaign:Campaign.emptyCampaign();
 	const {
@@ -56,21 +58,20 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 		maps, 
 		lastUpdated, 
 		patchNotes, 
-		screenshots, 
+		screenshots,
+		videos, 
 		installed, 
 		progress
 	} = campaign;
+	const basePath = path?path:"/campaign"
 
 	//const author:IAuthor = (selectedCampaignAuthor)?selectedCampaignAuthor:emptyAuthor;
 	const isCampaignInstalled:boolean = installed;//!Campaign.isCampaignInstalled(campaign);
 
 	const onDownloadClick = onDownloadCampaignClick;
 	const downloadProgress:number = (progress)?progress:0;
-	
-
-	console.log("campaign",campaign)
 	return (
-		<Router>
+		<Router basename={basePath}>
 		<section className="campaign-content">
 			<header className="campaign-content-header mb-2">
 				<div className="campaign-content-controls btn-group float-right" role="group">
@@ -88,6 +89,12 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 				<h1 className="campaign-content-title">{name}</h1>
 				<p className="campaign-content-subtitle">
 					By <a href={"mailto:"+author}>{author}</a>. Last Updated: <time>{lastUpdated}</time>
+				</p>
+				<p className="campaign-content-subtitle">
+					Project URL:&nbsp; 
+					<a target="_blank" href={`https://www.sc2mapster.com/projects/${id}`}>
+						https://www.sc2mapster.com/projects/{id}
+					</a>
 				</p>
 				{/*
 					<p className="campaign-content-subtitle">
@@ -109,16 +116,16 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 
 			<div className="campaign-content-body">
 				<div className="btn-group" role="group" aria-label="...">
-					<NavLink to="/campaign" exact className="btn btn-outline-primary" activeClassName="btn-primary active">
+					<NavLink to="/" exact className="btn btn-outline-primary" activeClassName="btn-primary active">
 						Description
 					</NavLink>
-					<NavLink to="/campaign/screenshots" className="btn btn-outline-primary" activeClassName="btn-primary active">
+					<NavLink to={`/screenshots`} className="btn btn-outline-primary" activeClassName="btn-primary active">
 						Screenshots
 					</NavLink>
-					<NavLink to="/campaign/patchNotes" className="btn btn-outline-primary" activeClassName="btn-primary active">
+					<NavLink to={`/patchNotes`} className="btn btn-outline-primary" activeClassName="btn-primary active">
 					Patch Notes
 					</NavLink>
-					<NavLink to="/campaign/maps" className="btn btn-outline-primary" activeClassName="btn-primary active">
+					<NavLink to={`/maps`} className="btn btn-outline-primary" activeClassName="btn-primary active">
 					Maps
 					</NavLink>
 				</div>
@@ -128,28 +135,59 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 				
 				<article>
 				<Switch>
-				<Route path="/campaign" exact render={()=>
-					<ReactMarkdown source={description} />
+				<Route path={`${basePath}`} exact render={()=>
+					<section>
+						{(videos) &&
+						<iframe 
+							width="638" 
+							height="358" 
+							src={`https://www.youtube.com/embed/${videos[0]}`}
+							frameBorder="0" 
+							allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+							allowFullScreen
+						></iframe>
+						
+						}
+						<ReactMarkdown 
+						
+						source={description}
+						className={"campaign-description"} 
+						skipHtml={true}
+						linkTarget={(uri)=>"_blank"}
+						/>
+					</section>
 				} />
-				<Route path="/campaign/screenshots" render={()=>
+				<Route path={`/screenshots`} render={()=>
 					<section>
 					{
-						screenshots.map((screenshot:any)=>{
-							return (<figure key={screenshot.src}><img style={{"maxWidth": "100%"}} src={screenshot.src} /></figure>);
+						screenshots.map(({src,description})=>{
+							return (
+							<figure className="figure" key={src}>
+								<img className="figure-img img-fluid rounded mw-100" src={src} />
+								<figcaption className="figure-caption">{description?description:"Caption"}</figcaption>
+							</figure>
+							);
 						})
 					}
 					</section>
 				} />
 				
-				<Route path="/campaign/patchNotes" render={()=>
+				<Route path={`/patchNotes`} render={()=>
 					<PatchNotes patchNotes={patchNotes}/>
 				} />
-				<Route path="/campaign/maps" render={()=>
+				<Route path={`/maps`} render={()=>
 					<dl>
-					{maps.map((map) =>
-						<React.Fragment key={map.destination}>
-							<dt>{map.name} <button className="btn btn-secondary">Launch</button></dt>
-							<dd>{map.description}</dd>
+					{maps.map(({name,description,destination}) =>
+						<React.Fragment key={destination}>
+							<div className="media border rounded border-light p-1 mb-2">
+								<div className="media-body">
+									<h4>{name}</h4>
+									<p><strong>Description:</strong>{description}</p>
+								</div>
+								<div className="media-right align-self-center">
+									<button className="btn btn-info">Launch</button>
+								</div>
+							</div>
 						</React.Fragment>
 					)}
 					</dl>

@@ -10,7 +10,6 @@ interface IManifestListItemProps {
 	onClick?: typeof selectCampaignLocal
 }
 const ManifestListItem: FC<IManifestListItemProps> = (props) => {
-	console.log("ManifestListItem", props)
 	const { campaign, index, selectedIndex, onClick } = props;
 	const { id, thumbnail, author, name, summmary, progress } = campaign;
 	const downloadProgress = (progress) ? progress : 0;

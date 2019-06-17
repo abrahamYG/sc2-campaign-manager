@@ -21,6 +21,16 @@ import Downloader from './Downloader';
 /**
  * Interface type for Campaign Objects
  */
+export interface IScreenshot {
+	src:string,
+	description?:string
+}
+
+export interface IPatchNote {
+	version:string,
+	date:string,
+	notes:string
+}
 export interface ICampaign {
 	/**Campaign Id*/
 	"id":string,
@@ -35,8 +45,9 @@ export interface ICampaign {
 	"maps":Array<ISC2Map>,
 	"mods":Array<ISC2Mod>,
 	"lastUpdated":string,
-	"patchNotes":Array<object>,
-	"screenshots":Array<string>,
+	"patchNotes":Array<IPatchNote>,
+	"screenshots":Array<IScreenshot>,
+	"videos"?:Array<string>,
 	[key: string]: string|number|object|boolean|ISC2Map|ISC2Mod
 };
 
@@ -64,16 +75,11 @@ export interface IAuthor {
 }
 export default class Campaign {
 	static getCampaignLocal = async (source:string):Promise<ICampaign> => {
-		console.group("getCampaignLocal")
 		const fullPath = source;// path.join(app.getPath("userData"),"manifests/", source)
 		
-		console.log(fullPath); 
 		const response:Buffer = await readFileAsync(fullPath);
 		const json = response.toString();
-		console.log(json);
 		const campaign:ICampaign = JSON.parse(json);
-		console.log(campaign);
-		console.groupEnd();
 		return campaign;
 	}
 	
@@ -140,14 +146,8 @@ export default class Campaign {
 	static downloadCampaign = (campaign:ICampaign) => {
 		const installDir = Campaign.getCampaignsInstallDir();
 		Downloader.pushCampaign(campaign);
-		//ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
-		const downloads = [...new Set(campaign.maps.map(
-			({source,sourceFormat}) => {return {source, sourceFormat}}
-		))].map(
-			(src) =>  download(src.source,Config.getInstallDir()).then(
-				(data) => data
-			)
-		)
+		ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
+		
 	}
 	static playCampaign = (campaign:ICampaign) => {
 		console.group("playCampaign")

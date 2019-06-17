@@ -29,7 +29,7 @@ function NavBar(props:NavBarProps) {
 				</li>
 				<li className="nav-item">
 					<NavLink to="/mapmakers" className="nav-link" activeClassName="active">
-						Mapmaker Tools
+						Manifest Editor
 					</NavLink>
 				</li>    
 				</ul>

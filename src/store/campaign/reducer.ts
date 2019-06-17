@@ -1,4 +1,4 @@
-import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL, SELECT_CAMPAIGN_LOCAL, SET_CAMPAIGN_LOCAL, SELECT_CAMPAIGN_REMOTE, SET_CAMPAIGNS_REMOTE } from "./types";
+import { CampaignActionTypes, ADD_CAMPAIGN, SELECT_CAMPAIGN, SET_CAMPAIGNS, SET_CAMPAIGNS_LOCAL, SELECT_CAMPAIGN_LOCAL, SET_CAMPAIGN_LOCAL, SELECT_CAMPAIGN_REMOTE, SET_CAMPAIGNS_REMOTE, SET_CAMPAIGN } from "./types";
 import _ from 'lodash';
 import { Reducer } from "redux";
 import { ICampaignState } from "./types";
@@ -70,6 +70,17 @@ const campaignState:ICampaignState = {
 		case SELECT_CAMPAIGN_REMOTE: {
 			const selectedIndexRemote = action.payload.index
 			return {...state, selectedIndexRemote};
+		}
+		case SET_CAMPAIGN: {
+			const {campaign, index} = action.payload;
+			const {campaigns} = state;
+			return {
+				...state,
+				campaigns:Object.assign(
+					[...campaigns], 
+					{[index]:campaign}
+				)
+			}
 		}
 		case SET_CAMPAIGN_LOCAL: {
 			const {campaign, index} = action.payload;

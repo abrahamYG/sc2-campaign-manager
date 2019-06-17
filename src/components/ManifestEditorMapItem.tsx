@@ -4,11 +4,12 @@ import React, { ChangeEvent, FC } from "react";
 interface IManifestEditorMapItemProps{
 	"index":number,
 	"map": ISC2Map,
+	"type"?:string,
 	"setCampaignMap":(map:ISC2Map,index:number)=>void
 }
 
 const ManifestEditorMapItem:FC<IManifestEditorMapItemProps> = (props) => {
-	const {map, index, setCampaignMap} = props;
+	const {map, index, setCampaignMap,type} = props;
 	const {name,destination,description, fileEntry, source, sourceFormat} = map;
 	const onChange = (e:ChangeEvent<HTMLInputElement>|ChangeEvent<HTMLTextAreaElement>|ChangeEvent<HTMLSelectElement>)=>{
 		console.log(e);
@@ -23,13 +24,14 @@ const ManifestEditorMapItem:FC<IManifestEditorMapItemProps> = (props) => {
 	return (
 		<div className="card border-secondary mb-3 mr-0 ml-1">
   			<div className="card-header text-white bg-secondary">
-				Map
-				<button className="btn btn-primary float-right" type="button" data-toggle="collapse" data-target={`map-${index}-body`} aria-expanded="false" aria-controls="collapseExample">
+			  <button className="btn btn-primary float-right" type="button" data-toggle="collapse" data-target={`map-${index}-body`} aria-expanded="false" aria-controls="collapseExample">
     				Collapse
   				</button>
+			  <h5 className="card-title">{type?type:"Map"} {index.toString()}</h5>
+				
   			</div>
   			<div className="card-body mr-3" id={`map-${index}-body`}>
-				<h5 className="card-title">Map {index.toString()}</h5>
+				{/*<h5 className="card-title">{type?type:"Map"} {index.toString()}</h5>*/}
 				
 				<fieldset className="form-group campaign-form-map">
 					<div className="form-group row">

@@ -8,10 +8,9 @@ import { setCampaignsLocal } from '../store/campaign/actions';
 
 
 interface IManifestListProps{
-	"campaigns"?:Array<ICampaign>, 
-	"selectedIndex"?:number, 
-	"onClick"?:(campaign:ICampaign)=>void,
-	setCampaigns:typeof setCampaignsLocal
+	campaigns?:Array<ICampaign>, 
+	selectedIndex?:number, 
+	setCampaigns?:typeof setCampaignsLocal
 	
 }
 
@@ -57,6 +56,7 @@ const mapStateToProps:MapStateToProps<IManifestListProps,IManifestListProps,AppS
 	const {campaignState} = state;
 	const {campaignsLocal,selectedIndexLocal} = campaignState
 	const props: typeof ownProps = {
+		...ownProps,
 		"campaigns":campaignsLocal, 
 		"selectedIndex":selectedIndexLocal
 	}

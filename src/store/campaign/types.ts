@@ -10,6 +10,7 @@ export const SET_CAMPAIGNS = "SET_CAMPAIGNS";
 export const SET_CAMPAIGNS_LOCAL = "SET_CAMPAIGNS_LOCAL";
 export const SET_CAMPAIGNS_REMOTE = "SET_CAMPAIGNS_REMOTE";
 
+export const SET_CAMPAIGN = "SET_CAMPAIGN";
 export const SET_CAMPAIGN_LOCAL = "SET_CAMPAIGN_LOCAL";
 
 export const SET_FILTER = "SET_FILTER";
@@ -64,6 +65,9 @@ export interface SelectCampaignRemoteAction extends Action<typeof SELECT_CAMPAIG
 	payload: ISelectCampaignPayload
 }
 
+export interface SetCampaignAction extends Action<typeof SET_CAMPAIGN>{
+	payload: ISelectCampaignPayload
+}
 export interface SetCampaignLocalAction extends Action<typeof SET_CAMPAIGN_LOCAL>{
 	payload: ISelectCampaignPayload
 }
@@ -75,6 +79,7 @@ export type CampaignActionTypes = SetCampaignsAction |
 									SetCampaignsLocalAction | 
 									SelectCampaignLocalAction |
 									SelectCampaignRemoteAction | 
+									SetCampaignAction |
 									SetCampaignLocalAction;
 
 

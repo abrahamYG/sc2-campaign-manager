@@ -72,7 +72,11 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 	const downloadProgress:number = (progress)?progress:0;
 	return (
 		<Router basename={basePath}>
+		
 		<section className="campaign-content">
+			<Route exact path="/" render={() => (
+						<Redirect to="/description"/>
+			)}/>
 			<header className="campaign-content-header mb-2">
 				<div className="campaign-content-controls btn-group float-right" role="group">
 					{(isCampaignInstalled) &&
@@ -116,7 +120,7 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 
 			<div className="campaign-content-body">
 				<div className="btn-group" role="group" aria-label="...">
-					<NavLink to="/" exact className="btn btn-outline-primary" activeClassName="btn-primary active">
+					<NavLink to="/description" className="btn btn-outline-primary" activeClassName="btn-primary active">
 						Description
 					</NavLink>
 					<NavLink to={`/screenshots`} className="btn btn-outline-primary" activeClassName="btn-primary active">
@@ -135,7 +139,7 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 				
 				<article>
 				<Switch>
-				<Route path={`${basePath}`} exact render={()=>
+				<Route path="/description" render={()=>
 					<section>
 						{(videos) &&
 						<iframe 

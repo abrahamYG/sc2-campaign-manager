@@ -94,7 +94,7 @@ export default class Campaign {
 		const campaign:ICampaign = await response.json();
 		return campaign;
 	}
-	static getCampaignRunCommand = (campaign:ICampaign):string => {
+	static getRunCommand = (campaign:ICampaign):string => {
 		console.group("getCampaignRunCommand");
 		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
 		const entryPointPath = path.join(Campaign.getCampaignsInstallDir(),entryPoint)
@@ -103,11 +103,13 @@ export default class Campaign {
 		console.groupEnd();
 		return command;
 	}
-	static getCampaignRunParams = (campaign:ICampaign):Array<string> => {
-		console.group("getCampaignRunParams");
-		const entryPoint = (campaign.entryPoint)?campaign.entryPoint:campaign.maps[0].destination;
-		const entryPointPath = path.join(Campaign.getCampaignsInstallDir(),entryPoint)
-		const params = Config.getRunParams().map(e=>e.replace("{map}",entryPointPath))
+	static getRunParams = (campaign:ICampaign,mapIndex:number):Array<string> => {
+		console.group("getCampaignRunParams")
+		console.log(mapIndex);
+		const {entryPoint, maps} = campaign
+		const entry = (mapIndex>=0)?maps[mapIndex].destination:(entryPoint)?entryPoint:maps[0].destination
+		const entryPath = path.join(Campaign.getCampaignsInstallDir(),entry)
+		const params = Config.getRunParams().map(e=>e.replace("{map}",entryPath))
 		
 		console.log("params", params)
 		console.groupEnd();
@@ -122,6 +124,7 @@ export default class Campaign {
 		const campaigns = await Promise.all(Config.getLocalSources().map((source:string) => {
 			return Campaign.getCampaignLocal(source) 
 		}));
+		console.log("getCampaignsLocal",campaigns)
 		return campaigns;
 	}
 	static getCampaignsInstallDir = ():string => {
@@ -149,13 +152,14 @@ export default class Campaign {
 		ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
 		
 	}
-	static playCampaign = (campaign:ICampaign) => {
+	static playCampaign = (campaign:ICampaign,mapIndex:number=-1) => {
+
 		console.group("playCampaign")
 		const data = {
 			...campaign, 
 			installDir:Campaign.getCampaignsInstallDir(), 
-			command: Campaign.getCampaignRunCommand(campaign),
-			params:Campaign.getCampaignRunParams(campaign)
+			command: Campaign.getRunCommand(campaign),
+			params:Campaign.getRunParams(campaign,mapIndex)
 		};
 		console.log("data", data);
 		ipcRenderer.send(msg.PLAY_CAMPAIGN, data);

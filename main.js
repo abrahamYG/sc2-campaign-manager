@@ -7,7 +7,6 @@ const fs = require('fs-extra');
 const download = require('download');
 //const os   = require('os');
 const yauzl = require('yauzl');
-const { default: installExtension, REACT_DEVELOPER_TOOLS,REDUX_DEVTOOLS } = require('electron-devtools-installer');
 //const download = require('./electron/Download');
 //const {download} = require('electron-dl');
 
@@ -26,6 +25,19 @@ let mainWindow;
 	electron: require(`${__dirname}/node_modules/electron`)
 });
 */
+
+const loadDevTools = () =>{
+	if(process.env.NODE_ENV === 'dev'){
+		const { default: installExtension, REACT_DEVELOPER_TOOLS,REDUX_DEVTOOLS } = require('electron-devtools-installer');
+	installExtension(REACT_DEVELOPER_TOOLS)
+		.then((name) => console.log(`Added Extension:  ${name}`))
+		.catch((err) => console.log('An error occurred: ', err));
+	installExtension(REDUX_DEVTOOLS)
+		.then((name) => console.log(`Added Extension:  ${name}`))
+		.catch((err) => console.log('An error occurred: ', err));
+	}
+}
+
 function createWindow () {
 	mainWindow = new BrowserWindow({
 		width: 900,
@@ -36,13 +48,8 @@ function createWindow () {
 			nodeIntegration: true
 		}
 	});
+	loadDevTools();
 	
-	installExtension(REACT_DEVELOPER_TOOLS)
-		.then((name) => console.log(`Added Extension:  ${name}`))
-		.catch((err) => console.log('An error occurred: ', err));
-	installExtension(REDUX_DEVTOOLS)
-		.then((name) => console.log(`Added Extension:  ${name}`))
-		.catch((err) => console.log('An error occurred: ', err));
 	mainWindow.loadFile('index.html');
 	/*mainWindow.webContents.openDevTools({
 		mode:"detach" 
@@ -215,6 +222,16 @@ ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 })
 
 ipcMain.on(msg.PLAY_CAMPAIGN, async (event, campaign) => {
+	const {command, params} = campaign;
+	console.log(command, params)
+	execFile(campaign.command,params,function(error, stdout, stderr) {
+		console.log(error)
+		console.log(stdout);
+	});
+});
+
+
+ipcMain.on(msg.PLAY_MAP, async (event, map) => {
 	const {command, params} = campaign;
 	console.log(command, params)
 	execFile(campaign.command,params,function(error, stdout, stderr) {

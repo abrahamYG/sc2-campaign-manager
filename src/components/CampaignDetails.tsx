@@ -36,7 +36,7 @@ interface ICampaignDetailsProps {
 	"campaign"?:ICampaign, 
 	"path"?:string,
 	"selectedCampaignAuthor"?:IAuthor, 
-	"onPlayCampaignClick":(campaign:ICampaign)=>void, 
+	"onPlayCampaignClick":(campaign:ICampaign,mapIndex?:number)=>void, 
 	"onUpdateCampaignClick"?:(campaign:ICampaign)=>void, 
 	"onDownloadCampaignClick":(campaign:ICampaign)=>void
 }
@@ -168,7 +168,7 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 						source={description}
 						className={"campaign-description"} 
 						skipHtml={true}
-						linkTarget={(uri)=>"_blank"}
+						linkTarget={()=>"_blank"}
 						/>
 					</section>
 				} />
@@ -192,15 +192,31 @@ const CampaignDetails:FC<ICampaignDetailsProps> = (props) => {
 				} />
 				<Route path={`/maps`} render={()=>
 					<dl>
-					{maps.map(({name,description,destination}) =>
+					{maps.map(({name,description,destination},index) =>
 						<React.Fragment key={destination}>
 							<div className="media border rounded border-light p-1 mb-2">
 								<div className="media-body">
 									<h4>{name}</h4>
-									<p><strong>Description:</strong>{description}</p>
+									{description &&
+										<>
+										<p><strong>Description:</strong></p>
+										<ReactMarkdown 
+											source={description}
+											className={"campaign-description"} 
+											skipHtml={true}
+											linkTarget={()=>"_blank"}
+										/>
+										</>
+									}
 								</div>
 								<div className="media-right align-self-center">
-									<button className="btn btn-info">Launch</button>
+									<button 
+										onClick={() => onPlayCampaignClick(campaign,index)} 
+										className={"btn btn-info "+(isCampaignInstalled?"":"disabled")}
+										disabled={!isCampaignInstalled}
+									>
+										Launch
+									</button>
 								</div>
 							</div>
 						</React.Fragment>

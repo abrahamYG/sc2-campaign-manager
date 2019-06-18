@@ -29,34 +29,14 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 	
 	constructor(props:ICampaignPaneProps){
 		super(props);
-		this.state = {
-			"campaigns": [], 
-			"authors": null,
-			"selectedCampaign": null, 
-			"selectedCampaignAuthor": null
-		};
-		
 	}
 	handleCampaignItemClick = (campaign:ICampaign) => {
 		localStorage.setItem('selectedCampaign',campaign.id)
 		//this.setState({selectedCampaign: campaign});
 	};
 
-	handleDownloadClick = (campaign:ICampaign) => {
-		console.group("handleDownloadClick")
-		console.log(campaign)
-		const {id} = campaign;
-		console.log(`isCampaignInstalled ${id}`,Campaign.isCampaignInstalled(campaign));
-		Campaign.downloadCampaign(campaign);
-		console.groupEnd();
-	}
-	handlePlayClick = (campaign:ICampaign) => {
-		console.group("handlePlayClick")
-		console.log(campaign)
-		const {id} = campaign;
-		Campaign.playCampaign(campaign);
-		console.groupEnd();
-	}
+	handleDownloadClick = Campaign.downloadCampaign;
+	handlePlayClick = Campaign.playCampaign;
 	
 	componentDidMount(){
 		const campaigns = this.props.campaigns.map((campaign, index) =>{
@@ -80,12 +60,12 @@ class CampaignPane extends React.Component<ICampaignPaneProps, ICampaignPaneStat
 		ipcRenderer.on(msg.DOWNLOAD_CAMPAIGN_FINISH, (event:any, arg:any) => {
 			const campaigns = [...this.props.campaigns];
 			const index = campaigns.findIndex(c => c.id === arg.campaignId)
-			const campaign = campaigns[index];
-			campaign.installed = Campaign.isCampaignInstalled(campaign);
+			const campaign = {
+				...campaigns[index],
+				installed:Campaign.isCampaignInstalled(campaigns[index])
+			};
 			console.log("DOWNLOAD_CAMPAIGN_FINISH", campaign)
-			campaigns[index] = campaign;
-			this.props.setCampaigns(campaigns)
-			this.setState({campaigns})
+			this.props.setCampaign(campaign,index)
 		});
 	}
 	render(){

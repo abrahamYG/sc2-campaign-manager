@@ -5,5 +5,6 @@ module.exports = {
 	DOWNLOAD_CAMPAIGN_STATUS: "downloadCampaignProgress",
 	DOWNLOAD_CAMPAIGN_FINISH: "downloadCampaignProgress",
 	PLAY_CAMPAIGN: "playCampaign",
+	PLAY_MAP: "playMap",
 
 }

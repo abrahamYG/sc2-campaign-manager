@@ -18,7 +18,8 @@ export interface IConfig {
 
 export default class Config {
 	static getConfigFilePath():string{
-		return path.join(app.getPath("userData"), "config.json")
+		const filename = `config-${app.getVersion()}.json`
+		return path.join(app.getPath("userData"), filename)
 	}
 
 	static showInstallDirOpenDialog(path:string, callback:(filePaths:Array<string>)=>void){
@@ -40,13 +41,13 @@ export default class Config {
 	}
 	static loadFromDisk():any{
 		let configs = {};
-		console.group("loadFromDisk")
-		if(this.configFileExists()){
+		const configFileExists =this.configFileExists();
+		console.log("configFileExists",configFileExists); 
+		if(configFileExists){
 			const configFile = this.getConfigFilePath();
-			console.log("configFile",configFile)
 			const data:Buffer = fs.readFileSync(configFile);
 			configs = JSON.parse(data.toString());
-			console.groupEnd();
+			
 		}
 		return configs;
 	}

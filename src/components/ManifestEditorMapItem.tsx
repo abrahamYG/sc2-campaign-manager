@@ -70,6 +70,7 @@ const ManifestEditorMapItem:FC<IManifestEditorMapItemProps> = (props) => {
 						name="description" 
 						aria-describedby="runParamsHelp" 
 						placeholder="Enter a description for the map" 
+						rows={4}
 					/>
 					</div>
 					<div className="form-group row">

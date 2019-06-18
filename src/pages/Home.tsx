@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter as Router, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 import Campaign, { ICampaign } from '../classes/Campaign'
 import NavBar from '../components/NavBar';
@@ -28,19 +28,14 @@ class Home extends Component<any, IHomeState> {
 		super(props);
 		const selectedPaneLocal = (localStorage.getItem('selectedPane') !== null) ? localStorage.getItem('selectedPane') : "campaigns";
 		const selectedCampaignLocal = (localStorage.getItem('selectedCampaign') !== null) ? localStorage.getItem('selectedCampaign') : null;
-		this.state = {
-			"campaigns": [],
-			"authors": null,
-			"selectedCampaign": null,
-			"selectedCampaignAuthor": null,
-			"selectedPane": selectedPaneLocal
-		};
+		console.log("Home props")
 		Campaign.getCampaignsRemote().then((campaigns) =>{
 			props.setCampaignsRemote(campaigns.map(
 				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
 			));
 		})
 		Campaign.getCampaignsLocal().then((campaigns) =>{
+			console.log(campaigns)
 			props.setCampaignsLocal(campaigns.map(
 				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
 			));
@@ -64,24 +59,14 @@ class Home extends Component<any, IHomeState> {
 
 	}
 
-	handleDownloadCampaignClick = (campaign: ICampaign) => {
-		console.log("Downloading " + campaign.id);
-	};
-
 	render() {
-		const {
-			selectedPane,
-			campaigns,
-			selectedCampaign,
-			selectedCampaignAuthor
-		} = this.state
-		const onDownloadCampaignClick = this.handleDownloadCampaignClick;
+		
 		return (
 			<Router>
 				<>
 				<NavBar />
 				<main className="container-fluid w-100 h-100">
-					<Route path="/" exact component={CampaignPane} />
+					<Route path="/" exact render={()=><Redirect to="/campaign"/>} />
 					<Route path="/campaign" component={CampaignPane} />
 					<Route path="/mapmakers" component={MapMakerPane} />
 					<Route path="/settings" component={SettingsPane} />

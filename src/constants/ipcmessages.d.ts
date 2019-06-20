@@ -6,6 +6,7 @@ declare interface IPCMessages {
 	DOWNLOAD_CAMPAIGN_FINISH:string;
 	PLAY_CAMPAIGN:string;
 	PLAY_MAP:string;
+	UNZIP_CAMPAIGN:string;
 
 }
 

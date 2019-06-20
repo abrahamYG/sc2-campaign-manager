@@ -54,10 +54,9 @@ function createWindow () {
 	/*mainWindow.webContents.openDevTools({
 		mode:"detach" 
 	});*/
-	mainWindow.on('closed', function () {
+	mainWindow.on('closed', () => {
 		mainWindow = null;
 	})
-
 	
 	
 }
@@ -75,13 +74,13 @@ function onReady(){
 
 app.on('ready', onReady)
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
 	if (process.platform !== 'darwin') {
 		app.quit();
 	}
 })
 
-app.on('activate', function () {
+app.on('activate', () => {
 	if (mainWindow === null) {
 		createWindow();
 	}
@@ -108,6 +107,51 @@ ipcMain.on(msg.DOWNLOAD_MAP, async (event, arg) => {
 	
 	
 })
+
+ipcMain.on(msg.UNZIP_CAMPAIGN,async (event, {source, zipPath, installPath}) =>{
+	yauzl.open(zipPath, { lazyEntries: true }, (err, zipfile) => {
+		if (err) {
+			throw err;
+		}
+		zipfile.readEntry();
+		zipfile.on("entry", (entry) => {
+			console.log(entry.fileName);
+			if (/\/$/.test(entry.fileName)) {
+				zipfile.readEntry();
+			} else {
+				const mod = source.files.find(
+					mod => entry.fileName === mod.fileEntry
+				);
+				if (mod) {
+					const entryBasePath = installPath;
+					const entryBaseName = mod.destination;
+					const entryFullPath = path.join(
+						entryBasePath,
+						entryBaseName
+					);
+					console.log("entryFullPath", entryFullPath);
+					fs.ensureDirSync(path.dirname(entryFullPath));
+					const ds = fs.createWriteStream(entryFullPath);
+					zipfile.openReadStream(entry, function(
+						err,
+						readStream
+					) {
+						if (err) throw err;
+						readStream.on("end", function() {
+							zipfile.readEntry();
+						});
+						readStream.pipe(ds);
+					});
+				} else {
+					zipfile.readEntry();
+				}
+			}
+		});
+		zipfile.once("end", function() {
+			zipfile.close();
+		});
+	});
+});
 
 ipcMain.on(msg.DOWNLOAD_CAMPAIGN, async (event, campaign) => {
 	let timer = Date.now();

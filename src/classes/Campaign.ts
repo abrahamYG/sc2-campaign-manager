@@ -149,7 +149,7 @@ export default class Campaign {
 	static downloadCampaign = (campaign:ICampaign) => {
 		const installDir = Campaign.getCampaignsInstallDir();
 		Downloader.pushCampaign(campaign);
-		ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
+		//ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
 		
 	}
 	static playCampaign = (campaign:ICampaign,mapIndex:number=-1) => {

@@ -8,6 +8,7 @@ import MapMakerPane from '../containers/MapMakerPane'
 import SettingsPane from '../containers/SettingsPane'
 import { setCampaigns, setCampaignsLocal, setCampaignsRemote } from '../store/campaign/actions';
 import { MapDispatchToProps, connect } from 'react-redux';
+import Downloader from '../classes/Downloader';
 
 interface IHomeState {
 	"campaigns": Array<ICampaign>,
@@ -30,14 +31,23 @@ class Home extends Component<any, IHomeState> {
 		const selectedCampaignLocal = (localStorage.getItem('selectedCampaign') !== null) ? localStorage.getItem('selectedCampaign') : null;
 		console.log("Home props")
 		Campaign.getCampaignsRemote().then((campaigns) =>{
+			//campaigns.forEach(campaign =>Downloader.pushCampaign(campaign))
+			
+
 			props.setCampaignsRemote(campaigns.map(
-				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
+				campaign => ({
+					...campaign, 
+					installed:Campaign.isCampaignInstalled(campaign)
+				})
 			));
 		})
 		Campaign.getCampaignsLocal().then((campaigns) =>{
-			console.log(campaigns)
+			//campaigns.forEach(campaign => Downloader.pushCampaign(campaign))
 			props.setCampaignsLocal(campaigns.map(
-				campaign => {return {...campaign, installed:Campaign.isCampaignInstalled(campaign)}}
+				campaign => ({
+					...campaign, 
+					installed:Campaign.isCampaignInstalled(campaign)
+				})
 			));
 		})
 		//props.setCampaignsRemote();

@@ -48,6 +48,7 @@ export interface ICampaign {
 	"patchNotes":Array<IPatchNote>,
 	"screenshots":Array<IScreenshot>,
 	"videos"?:Array<string>,
+	"state"?:string,
 	[key: string]: string|number|object|boolean|ISC2Map|ISC2Mod
 };
 
@@ -148,6 +149,7 @@ export default class Campaign {
 
 	static downloadCampaign = (campaign:ICampaign) => {
 		const installDir = Campaign.getCampaignsInstallDir();
+		
 		Downloader.pushCampaign(campaign);
 		//ipcRenderer.send(msg.DOWNLOAD_CAMPAIGN, {...campaign, installDir:Campaign.getCampaignsInstallDir()});
 		

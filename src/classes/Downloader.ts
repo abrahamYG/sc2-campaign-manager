@@ -28,12 +28,27 @@ interface IDownloadSet {
 	[key: string]: IDownload;
 }
 
+const getCampaignFromStore = (campaignId:string) => {
+	const campaigns = store.getState().campaignState.campaigns;
+	const campaignIndex = campaigns.findIndex(c => c.id === campaignId);
+	return campaigns[campaignIndex]
+		
+}
+
+const setCampaignInStore = (campaignId:string,campaign:ICampaign) => {
+	const campaigns = store.getState().campaignState.campaigns;
+	const campaignIndex = campaigns.findIndex(c => c.id === campaignId);
+	store.dispatch(setCampaign(campaign,campaignIndex));
+}
+
 export default class Downloader {
 	static downloads: IDownloadSet;
 	static progress: number = 0;
+
 	static pushCampaign(campaign: ICampaign) {
+
 		console.log("pushCampaign");
-		let sourcesbyKey: { [key: string]: ISource } = {};
+
 		const mods: Array<ISC2Component> = [...campaign.mods, ...campaign.maps];
 		const sources = _.uniqWith<ISource>(
 			mods.map(
@@ -60,11 +75,24 @@ export default class Downloader {
 		);
 		Promise.all(promises).then(data => {
 			console.log("downloads have finished for", campaign.id);
+			const newCampaign:ICampaign = {
+				...getCampaignFromStore(campaign.id),
+				installed:Campaign.isCampaignInstalled(getCampaignFromStore(campaign.id)),
+				progress:0,
+				state:"ready"
+			};
+			setCampaignInStore(newCampaign.id,newCampaign)
 		});
+		
+		const newCampaign:ICampaign = {
+			...getCampaignFromStore(campaign.id),
+			state:"downloading"
+		};
+		setCampaignInStore(newCampaign.id,newCampaign)
+		
 	}
 	static async downloadSource(source: ISource, index: number) {
 		let timer = Date.now();
-
 		const tempPath = path.join(
 			app.getPath("temp"),
 			app.getName(),
@@ -87,6 +115,12 @@ export default class Downloader {
 					} else {
 						this.copyMaps(source.files[0], tempFullName);
 					}
+					const newCampaign:ICampaign = {
+						...getCampaignFromStore(source.campaignId),
+						installed:Campaign.isCampaignInstalled(getCampaignFromStore(source.campaignId)),
+						state:"ready"
+					};
+					setCampaignInStore(newCampaign.id,newCampaign)
 				});
 				dl.pipe(ws);
 			})
@@ -192,12 +226,10 @@ export default class Downloader {
 			[campaignId]: download
 		};
 		console.log(campaignId, download.progress);
-		const campaigns = store.getState().campaignState.campaigns;
-		const campaignIndex = campaigns.findIndex(c => c.id === campaignId);
-		const campaign = {
-			...campaigns[campaignIndex],
+		const newCampaign:ICampaign = {
+			...getCampaignFromStore(campaignId),
 			progress:download.progress
 		};
-		store.dispatch(setCampaign(campaign,campaignIndex));
+		setCampaignInStore(campaignId,newCampaign)
 	}
 }

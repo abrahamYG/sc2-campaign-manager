@@ -36,7 +36,8 @@ class Home extends Component<any, IHomeState> {
 
 			props.setCampaignsRemote(campaigns.map(
 				campaign => ({
-					...campaign, 
+					...campaign,
+					state:"ready",
 					installed:Campaign.isCampaignInstalled(campaign)
 				})
 			));
@@ -45,7 +46,8 @@ class Home extends Component<any, IHomeState> {
 			//campaigns.forEach(campaign => Downloader.pushCampaign(campaign))
 			props.setCampaignsLocal(campaigns.map(
 				campaign => ({
-					...campaign, 
+					...campaign,
+					state:"ready", 
 					installed:Campaign.isCampaignInstalled(campaign)
 				})
 			));

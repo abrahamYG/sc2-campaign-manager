@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, FC } from 'react';
 import { HashRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 import Campaign, { ICampaign } from '../classes/Campaign'
@@ -6,7 +6,7 @@ import NavBar from '../components/NavBar';
 import CampaignPane from '../containers/CampaignPane';
 import MapMakerPane from '../containers/MapMakerPane'
 import SettingsPane from '../containers/SettingsPane'
-import { setCampaigns, setCampaignsLocal, setCampaignsRemote } from '../store/campaign/actions';
+import { setCampaigns, setCampaignsLocal, setCampaignsRemote, getCampaignsLocal, getCampaignsRemote } from '../store/campaign/actions';
 import { MapDispatchToProps, connect } from 'react-redux';
 import Downloader from '../classes/Downloader';
 
@@ -22,53 +22,36 @@ interface IHomeProps {
 	setCampaigns?: typeof setCampaigns
 	setCampaignsLocal?: typeof setCampaignsLocal
 	setCampaignsRemote?: typeof setCampaignsRemote
+	getCampaignsLocal?: typeof getCampaignsLocal
+	getCampaignsRemote?: typeof getCampaignsRemote 
 }
 
-class Home extends Component<any, IHomeState> {
+
+export const NewHome:FC<IHomeProps> = props  => {
+	return (
+	<Router>
+		<>
+		<NavBar />
+		<main className="container-fluid w-100 h-100">
+			<Route path="/" exact render={()=><Redirect to="/campaign"/>} />
+			<Route path="/campaign" component={CampaignPane} />
+			<Route path="/mapmakers" component={MapMakerPane} />
+			<Route path="/settings" component={SettingsPane} />
+		</main>
+		</>
+	</Router>
+	);
+}
+
+class Home extends Component<IHomeProps, IHomeState> {
 	constructor(props: IHomeProps) {
 		super(props);
 		const selectedPaneLocal = (localStorage.getItem('selectedPane') !== null) ? localStorage.getItem('selectedPane') : "campaigns";
 		const selectedCampaignLocal = (localStorage.getItem('selectedCampaign') !== null) ? localStorage.getItem('selectedCampaign') : null;
 		console.log("Home props")
-		Campaign.getCampaignsRemote().then((campaigns) =>{
-			//campaigns.forEach(campaign =>Downloader.pushCampaign(campaign))
-			
-
-			props.setCampaignsRemote(campaigns.map(
-				campaign => ({
-					...campaign,
-					state:"ready",
-					installed:Campaign.isCampaignInstalled(campaign)
-				})
-			));
-		})
-		Campaign.getCampaignsLocal().then((campaigns) =>{
-			//campaigns.forEach(campaign => Downloader.pushCampaign(campaign))
-			props.setCampaignsLocal(campaigns.map(
-				campaign => ({
-					...campaign,
-					state:"ready", 
-					installed:Campaign.isCampaignInstalled(campaign)
-				})
-			));
-		})
-		//props.setCampaignsRemote();
-		//props.setCampaignsLocal();
-		//setCampaignsLocal
-
-		//Campaign.getCampaignsLocal().then((campaigns: any) =>this.setState({campaigns}))
-		//Campaign.getCampaignsRemote().then((campaigns: any) =>this.setState({campaigns}))
-
-
-
-		/* const conn = new scrapper.MapsterConnection();
-
-		(async function() {
-			const projectName = 'thoughts-in-chaos';
-			const result = await conn.getProjectOverview(projectName);
-			console.log(result);
-		})(); */
-
+		
+		props.getCampaignsRemote();
+		props.getCampaignsLocal();
 	}
 
 	render() {
@@ -92,15 +75,11 @@ class Home extends Component<any, IHomeState> {
 const mapDispatchToProps:MapDispatchToProps<IHomeProps,IHomeProps> = (dispatch,ownProps) =>{
 	return {
 		...ownProps,
-		setCampaigns: (campaigns) => {
-			return dispatch(setCampaigns(campaigns));
-		},
-		setCampaignsLocal: (campaigns) => {
-			return dispatch(setCampaignsLocal(campaigns));
-		},
-		setCampaignsRemote: (campaigns) => {
-			return dispatch(setCampaignsRemote(campaigns));
-		}
+		setCampaigns: campaigns => dispatch(setCampaigns(campaigns)),
+		setCampaignsLocal: campaigns => dispatch(setCampaignsLocal(campaigns)),
+		setCampaignsRemote: campaigns => dispatch(setCampaignsRemote(campaigns)),
+		getCampaignsLocal,
+		getCampaignsRemote
 	};
 }
 

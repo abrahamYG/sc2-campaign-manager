@@ -33,12 +33,13 @@ function PatchNotes(props: any) {
 }
 
 interface ICampaignDetailsProps {
-	"campaign"?: ICampaign,
-	"path"?: string,
-	"selectedCampaignAuthor"?: IAuthor,
-	"onPlayCampaignClick": (campaign: ICampaign, mapIndex?: number) => void,
-	"onUpdateCampaignClick"?: (campaign: ICampaign) => void,
-	"onDownloadCampaignClick": (campaign: ICampaign) => void
+	selectedId:string,
+	campaign?: ICampaign,
+	path?: string,
+	selectedCampaignAuthor?: IAuthor,
+	onPlayCampaignClick: (campaign: ICampaign, mapIndex?: number) => void,
+	onUpdateCampaignClick?: (campaign: ICampaign) => void,
+	onDownloadCampaignClick: (campaign: ICampaign) => void
 }
 
 const CampaignDetails: FC<ICampaignDetailsProps> = (props) => {
@@ -257,9 +258,10 @@ const CampaignDetails: FC<ICampaignDetailsProps> = (props) => {
 
 const mapStateToProps: MapStateToProps<ICampaignDetailsProps, ICampaignDetailsProps, AppState> = (state, ownProps) => {
 	const { campaignState } = state;
-	const { selectedIndex, campaigns } = campaignState;
+	const { selectedIndex, campaigns, campaignsById } = campaignState;
+	const {selectedId} = ownProps;
 	const props = {
-		"campaign": campaigns[selectedIndex],
+		"campaign": campaignsById[selectedId],
 		"index": selectedIndex
 	}
 	return { ...ownProps, ...props };

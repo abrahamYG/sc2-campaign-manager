@@ -13,11 +13,11 @@
     }
   },
   "scripts": {
-    "dev": "webpack --watch",
+    "dev": "cross-env NODE_ENV=dev webpack --watch",
     "start": "nf start",
     "webpack": "webpack",
-    "electron": "electron .",
-    "build": "electron-builder"
+    "electron": "cross-env NODE_ENV=dev electron .",
+    "build": "cross-env NODE_ENV=prod electron-builder"
   },
   "repository": "https://github.com/abrahamYG/sc2-campaign-manager",
   "keywords": [
@@ -39,6 +39,7 @@
     "babel-cli": "^6.26.0",
     "babel-loader": "^8.0.5",
     "babel-preset-flow": "^6.23.0",
+    "cross-env": "^5.2.0",
     "css-loader": "^2.1.0",
     "electron": "^4.0.4",
     "electron-builder": "^20.41.0",

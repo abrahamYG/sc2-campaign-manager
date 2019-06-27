@@ -1,3 +1,4 @@
+.env
 dist/
 bundle.js
 *.swp[a-z]

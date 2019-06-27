@@ -27,6 +27,7 @@ let mainWindow;
 */
 
 const loadDevTools = () =>{
+	console.log("NODE_ENV",process.env)
 	if(process.env.NODE_ENV === 'dev'){
 		const { default: installExtension, REACT_DEVELOPER_TOOLS,REDUX_DEVTOOLS } = require('electron-devtools-installer');
 	installExtension(REACT_DEVELOPER_TOOLS)

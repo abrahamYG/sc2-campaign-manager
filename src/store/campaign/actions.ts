@@ -7,8 +7,9 @@ import { CampaignActionTypes,
 	SELECT_CAMPAIGN_LOCAL, 
 	SET_CAMPAIGN,
 	SET_CAMPAIGN_LOCAL, AddCampaignAction, SelectCampaignAction, SelectCampaignLocalAction, SetCampaignsAction, SetCampaignsLocalAction, SetCampaignLocalAction, SetCampaignsRemoteAction, SET_CAMPAIGNS_REMOTE, SetCampaignAction } from "./types";
-import { ICampaign } from "../../classes/Campaign";
+import Campaign, { ICampaign } from "../../classes/Campaign";
 import { ActionCreator, bindActionCreators,Dispatch, Action } from "redux";
+import store from "../../configureStore";
 
 let nextTodoId = 0;
 
@@ -55,5 +56,29 @@ export const setCampaignLocal = (campaign:ICampaign, index:number):SetCampaignLo
 	type: SET_CAMPAIGN_LOCAL,
 	payload: {campaign,index}
 });
+
+export const getCampaignsRemote = async () => {
+	const campaigns  = await Campaign.getCampaignsRemote()
+	setCampaignsRemote(campaigns.map(
+		campaign => ({
+			...campaign,
+			state:"ready",
+			installed:Campaign.isCampaignInstalled(campaign)
+		})
+	))
+}
+
+
+export const getCampaignsLocal = async () => {
+	const campaigns  = await Campaign.getCampaignsLocal()
+	console.log("getcampaignslocal",campaigns)
+	store.dispatch(setCampaignsLocal(campaigns.map(
+		campaign => ({
+			...campaign,
+			state:"ready",
+			installed:Campaign.isCampaignInstalled(campaign)
+		})
+	))) 
+}
 
 //export const setFilter = filter => ({ type: SET_FILTER, payload: { filter } });

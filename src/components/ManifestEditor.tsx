@@ -310,6 +310,7 @@ const ManifestEditor:FC<IManifestEditorProps> = (props) => {
 				return (
 				<CampaignDetails 
 				campaign={campaign}
+				selectedId={campaign.id}
 				path={"mapmakers/preview/"}
 				onDownloadCampaignClick={()=>{}}
 					onPlayCampaignClick={()=>{}}

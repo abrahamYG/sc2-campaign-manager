@@ -59,13 +59,13 @@ export const setCampaignLocal = (campaign:ICampaign, index:number):SetCampaignLo
 
 export const getCampaignsRemote = async () => {
 	const campaigns  = await Campaign.getCampaignsRemote()
-	setCampaignsRemote(campaigns.map(
+	store.dispatch(setCampaignsRemote(campaigns.map(
 		campaign => ({
 			...campaign,
 			state:"ready",
 			installed:Campaign.isCampaignInstalled(campaign)
 		})
-	))
+	)))
 }
 
 

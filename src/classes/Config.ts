@@ -7,11 +7,12 @@ const {currentPlatform, platforms} = require("./Platform")
 import path from 'path'
 import fs from 'fs'	
 
-const manifestSource = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign-manager/master/public/sources.json";
+export const manifestFeed = "https://raw.githubusercontent.com/abrahamYG/sc2-campaign-manager/master/public/sources.json";
 export interface IConfig {
 	installDir:string, 
 	runCommand:string, 
 	runParams:string,
+	feed:string,
 	campaignSources:Array<string>
 	campaignLocalSources:Array<string>
 }
@@ -35,7 +36,7 @@ export default class Config {
 		return fs.existsSync(configFile);
 	}
 	static getSourcesRemote = async () => {
-		const response:Response = await fetch(manifestSource);
+		const response:Response = await fetch(manifestFeed);
 		const sources:Array<string> = await response.json();
 		return sources;
 	}
@@ -67,6 +68,9 @@ export default class Config {
 		else{
 			//return this.installDir;
 		}
+	}
+	static getFeed():string {
+		return Config.configFileExists()&&Config.loadFromDisk().feed?(Config.loadFromDisk().feed):manifestFeed;
 	}
 	static getSources():Array<string> {
 		return  Config.configFileExists()&&Config.loadFromDisk().campaignSources? (Config.loadFromDisk().campaignSources):[""];

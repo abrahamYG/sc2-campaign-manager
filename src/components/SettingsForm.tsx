@@ -9,6 +9,7 @@ const SettingsForm = (props:any) => {
 		installDir, setInstallDir,
 		runCommand, setRunCommand,
 		runParams, setRunParams,
+		feed, setFeed,
 		campaignSources, setCampaignSources,
 		campaignLocalSources, setCampaignLocalSources,
 		disabledForm, setDisabledForm,
@@ -89,6 +90,20 @@ const SettingsForm = (props:any) => {
 				<small id="runParamsHelp" className="form-text text-muted">
 					These are parameters used to run the map and set additional settings when running StarcCraft II.
 					If you are not sure what to write here, you can happily leave the default values.
+				</small>
+
+				<label htmlFor="feed">Campaign Feed</label>
+				<input 
+					value={feed}
+					onChange={e => setFeed(e.target.value)}
+					type="text" 
+					className="form-control" 
+					name="feed" 
+					aria-describedby="feedHelp" 
+					placeholder="Enter a set of parameters" 
+				/>
+				<small id="feedHelp" className="form-text text-muted">
+					A remote feed that provides a set of campaigns available to download
 				</small>
 				<label htmlFor="campaignSources">Campaign Sources</label>
 				<textarea 

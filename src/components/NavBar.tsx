@@ -31,7 +31,12 @@ function NavBar(props:NavBarProps) {
 					<NavLink to="/mapmakers" className="nav-link" activeClassName="active">
 						Manifest Editor
 					</NavLink>
-				</li>    
+				</li>
+				<li className="nav-item">
+					<NavLink to="/scrapper" className="nav-link" activeClassName="active">
+						Mapster Scrapper
+					</NavLink>
+				</li> 
 				</ul>
 				{/*
 				<ul className="navbar-nav">

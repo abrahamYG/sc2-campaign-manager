@@ -10,6 +10,7 @@ export const SettingsPane: FC = (props:any) =>{
 	const [installDir, setInstallDir] = useState(Config.getInstallDir());
 	const [runCommand, setRunCommand] = useState(Config.getRunCommand());
 	const [runParams, setRunParams] = useState(Config.getRunParams().join(" "));
+	const [feed, setFeed] = useState(Config.getFeed());
 	const [campaignSources, setCampaignSources] = useState(Config.getSources().join("\n"));
 	const [campaignLocalSources, setCampaignLocalSources] = useState(Config.getLocalSources().join("\n"));
 	const [disabledForm, setDisabledForm] = useState(false);
@@ -18,6 +19,7 @@ export const SettingsPane: FC = (props:any) =>{
 	const formProps ={installDir, setInstallDir,
 		runCommand, setRunCommand,
 		runParams, setRunParams,
+		feed, setFeed,
 		disabledForm, setDisabledForm,
 		campaignSources, setCampaignSources,
 		campaignLocalSources, setCampaignLocalSources,
@@ -27,6 +29,7 @@ export const SettingsPane: FC = (props:any) =>{
 			installDir, 
 			runCommand, 
 			runParams,
+			feed,
 			campaignSources:campaignSources.split("\n"),
 			campaignLocalSources:campaignLocalSources.split("\n")
 		});
@@ -53,7 +56,7 @@ export const SettingsPane: FC = (props:any) =>{
 
 const mapStateToProps = (state:AppState,ownProps:any):any => {
 	const {configState} = state;
-	return configState;
+	return {...configState,...ownProps};
 };
 
 

@@ -9,7 +9,7 @@ import { HashRouter as Router, Route , NavLink, Redirect } from 'react-router-do
 import CampaignDetails from './CampaignDetails';
 import ManifestEditorScreenshot from './ManifestEditorScreenshotItem';
 import ManifestEditorJson from './ManifestEditorJson';
-
+import _ from 'lodash'
 
 interface IManifestEditorProps{
 	"campaign"?:ICampaign,
@@ -69,6 +69,13 @@ const ManifestEditor:FC<IManifestEditorProps> = (props) => {
 		};
 		setCampaign(newCampaign,index);
 	}
+	const removeMap = (maps:ISC2Map[],mapIndex:number) =>{
+		setCampaign({
+			...campaign,
+			maps:_.xor(maps, [maps[mapIndex]])
+		},index);
+	};
+	
 	
 	const setCampaignMod = (mod:ISC2Mod,modIndex:number)=>{
 		const mods = [...campaign.mods];
@@ -98,14 +105,14 @@ const ManifestEditor:FC<IManifestEditorProps> = (props) => {
 			<Route exact path="/" render={() => (
 					<Redirect to="/editor"/>
 			)}/>
-			<div className="btn-group mt-2 float-right" role="group" aria-label="">
-				<NavLink to="/editor" className="btn btn-outline-primary" activeClassName="btn-primary active">
+			<div className="manifesteditor-views" role="group" aria-label="">
+				<NavLink to="/editor" className="manifesteditor-viewoption btn btn-outline-primary" activeClassName="btn-primary active">
 					Editor
 				</NavLink>
-				<NavLink to="/json" className="btn btn-outline-primary" activeClassName="btn-primary active">
+				<NavLink to="/json" className="manifesteditor-viewoption btn btn-outline-primary" activeClassName="btn-primary active">
 					JSON
 				</NavLink>
-				<NavLink to="/preview" className="btn btn-outline-primary" activeClassName="btn-primary active">
+				<NavLink to="/preview" className="manifesteditor-viewoption btn btn-outline-primary" activeClassName="btn-primary active">
 					Preview
 				</NavLink>
 			</div>

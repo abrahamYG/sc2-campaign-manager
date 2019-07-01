@@ -92,3 +92,9 @@ progress[value]::-webkit-progress-value {
 .campaign-description img {
 	max-width: 100%;
 }
+
+.manifesteditor-views {
+	@extend .btn-group; 
+	@extend .mt-2;
+	@extend .float-right;
+}

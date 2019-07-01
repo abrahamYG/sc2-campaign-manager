@@ -118,7 +118,9 @@ export default class Campaign {
 	}
 	
 	static getCampaignsRemote = async (): Promise<Array<ICampaign>> => {
-		const campaigns:Array<ICampaign> = await Promise.all(Config.getSources().map((source:string) => Campaign.getCampaignRemote(source)));
+		const feed = Config.getFeed();
+		const sources:Array<string> = (feed !=="")?(await (await fetch(feed)).json()):Config.getSources()
+		const campaigns:Array<ICampaign> = await Promise.all(sources.map((source:string) => Campaign.getCampaignRemote(source)));
 		return campaigns;
 	}
 	static getCampaignsLocal = async ():Promise<Array<ICampaign>> => {

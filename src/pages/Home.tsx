@@ -9,6 +9,7 @@ import SettingsPane from '../containers/SettingsPane'
 import { setCampaigns, setCampaignsLocal, setCampaignsRemote, getCampaignsLocal, getCampaignsRemote } from '../store/campaign/actions';
 import { MapDispatchToProps, connect } from 'react-redux';
 import Downloader from '../classes/Downloader';
+import ScrapperPane from '../containers/ScrapperPane';
 
 interface IHomeState {
 	"campaigns": Array<ICampaign>,
@@ -37,6 +38,7 @@ export const NewHome:FC<IHomeProps> = props  => {
 			<Route path="/campaign" component={CampaignPane} />
 			<Route path="/mapmakers" component={MapMakerPane} />
 			<Route path="/settings" component={SettingsPane} />
+			<Route path="/scrapper" component={ScrapperPane} />
 		</main>
 		</>
 	</Router>
@@ -65,6 +67,7 @@ class Home extends Component<IHomeProps, IHomeState> {
 					<Route path="/campaign" component={CampaignPane} />
 					<Route path="/mapmakers" component={MapMakerPane} />
 					<Route path="/settings" component={SettingsPane} />
+			<Route path="/scrapper" component={ScrapperPane} />
 				</main>
 				</>
 			</Router>

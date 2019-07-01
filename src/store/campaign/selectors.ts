@@ -36,8 +36,8 @@ export const sortCampaigns = (
                 case "string":
                     console.log("string")
 					const [val1, val2] = [
-						(c1[key] as string).toUpperCase(),
-						(c2[key] as string).toUpperCase()
+						(c1[key] as string).toUpperCase().replace(/^THE /gi,"").replace(/^Starcraft:* 2*:* */gi,""),
+						(c2[key] as string).toUpperCase().replace(/^THE /gi,"").replace(/^Starcraft:* 2*:* */gi,"")
 					];
 					return val1.localeCompare(val2, 'en', {sensitivity: 'base'});
 				case "number":

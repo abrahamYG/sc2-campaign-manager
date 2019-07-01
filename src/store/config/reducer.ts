@@ -7,6 +7,7 @@ const configState:IConfigState = {
 	config:{
 		campaignSources:[],
 		campaignLocalSources:[],
+		feed:"",
 		installDir:"",
 		runCommand:"",
 		runParams:""

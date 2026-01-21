@@ -85,7 +85,7 @@
 		"h2m": "^0.7.0",
 		"immutability-helper": "^3.0.0",
 		"jquery": "^3.4.0",
-		"lodash": "^4.17.11",
+		"lodash": "^4.17.19",
 		"node-sass": "^4.11.0",
 		"open-iconic": "^1.1.1",
 		"popper.js": "^1.15.0",

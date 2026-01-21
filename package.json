@@ -101,7 +101,7 @@
 		"react-router-dom": "^4.3.1",
 		"redux": "^4.0.1",
 		"sc2mapster-crawler": "git+https://github.com/SC2Mapster/sc2mapster-crawler.git",
-		"yarn": "^1.13.0",
+		"yarn": "^1.22.0",
 		"yauzl": "^2.10.0"
 	}
 }
